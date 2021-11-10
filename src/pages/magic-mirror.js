@@ -6,9 +6,9 @@ import Header from "../components/Header";
 import Seo from "../components/Seo";
 import me from "../../static/me.jpg";
 
-class AboutPage extends Component {
+class MagicMirrorPage extends Component {
   render() {
-    const contentTitle = "About";
+    const contentTitle = "Magic Mirror";
     const siteTitle = this.props.data.site.siteMetadata.title;
 
     return (
@@ -51,7 +51,7 @@ class AboutPage extends Component {
   }
 }
 
-export default AboutPage;
+export default MagicMirrorPage;
 
 export const pageQuery = graphql`
   query aboutPageQuery {
