@@ -54,7 +54,7 @@ class MagicMirrorPage extends Component {
 export default MagicMirrorPage;
 
 export const pageQuery = graphql`
-  query aboutPageQuery {
+  query magicMirrorPageQuery {
     site {
       siteMetadata {
         title
