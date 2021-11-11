@@ -63,7 +63,7 @@ export const pageQuery = graphql`
   }
 `;
 
-AboutPage.propTypes = {
+MagicMirrorPage.propTypes = {
   location: PropTypes.object.isRequired,
   data: PropTypes.shape({
     site: PropTypes.shape({
