@@ -133,6 +133,9 @@ module.exports = {
     "gatsby-plugin-nprogress",
     "gatsby-plugin-purgecss",
     "gatsby-plugin-offline",
-    "gatsby-plugin-sitemap"
+    "gatsby-plugin-sitemap",
+    `gatsby-plugin-image`,
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`
   ]
 };

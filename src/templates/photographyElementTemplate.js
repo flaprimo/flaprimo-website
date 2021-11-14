@@ -4,10 +4,11 @@ import Layout from "../components/Layout";
 import PropTypes from "prop-types";
 import NextPrevElements from "../components/NextPrevElements";
 import Tags from "../components/Tags";
-import Img from "gatsby-image";
+import { getImage, GatsbyImage } from "gatsby-plugin-image";
 import Header from "../components/Header";
 import Link from "gatsby-link";
 import Seo from "../components/Seo";
+import { getSrc } from "gatsby-plugin-image"
 
 class PhotographyElementTemplate extends React.Component {
   render() {
@@ -41,8 +42,10 @@ class PhotographyElementTemplate extends React.Component {
             {this.props.data.allFile.edges.map((image, i) => (
               <Link key={i} className="column is-narrow"
                     to={this.props.location.pathname +
-                    image.node.childImageSharp.fixed.src.split("/")[4].split(".")[0]}>
-                <Img fixed={image.node.childImageSharp.fixed} alt="big size photo in the gallery"/>
+                    getSrc(image.node).split("/")[4].split(".")[0]}>
+                <GatsbyImage
+                  image={getImage(image.node)}
+                  alt="big size photo in the gallery" />
               </Link>
             ))}
           </div>
@@ -57,53 +60,51 @@ class PhotographyElementTemplate extends React.Component {
 
 export default PhotographyElementTemplate;
 
-export const pageQuery = graphql`
-  query photographyElementQuery($slug: String!) {
-    site {
-      siteMetadata {
-        title
-      }
+export const pageQuery = graphql`query photographyElementQuery($slug: String!) {
+  site {
+    siteMetadata {
+      title
     }
-    markdownRemark(fields: { slug: { eq: $slug } }) {
-      id
-      html
-      excerpt
-      frontmatter {
-        title
-        date(formatString: "MMMM DD, YYYY")
-        category
-        tags
-        cover {
-          childImageSharp {
-            resize(width: 1000) {
-              src
-              height
-              width
-            }
-          }
-        }
-      }
-    }
-    allFile(
-    filter: {
-      sourceInstanceName: {eq: "photography"},
-      internal: {mediaType: {eq: "image/jpeg"}},
-      absolutePath: {regex: $slug}
-    },
-    sort: {fields: [name], order: ASC}
-    )
-    {
-      edges {
-        node {
-          childImageSharp {
-            fixed(width: 300, height: 300, quality: 85) {
-              ...GatsbyImageSharpFixed_tracedSVG
-            }
+  }
+  markdownRemark(fields: {slug: {eq: $slug}}) {
+    id
+    html
+    excerpt
+    frontmatter {
+      title
+      date(formatString: "MMMM DD, YYYY")
+      category
+      tags
+      cover {
+        childImageSharp {
+          resize(width: 1000) {
+            src
+            height
+            width
           }
         }
       }
     }
   }
+  allFile(
+    filter: {sourceInstanceName: {eq: "photography"}, internal: {mediaType: {eq: "image/jpeg"}}, absolutePath: {regex: $slug}}
+    sort: {fields: [name], order: ASC}
+  ) {
+    edges {
+      node {
+        childImageSharp {
+          gatsbyImageData(
+            width: 300
+            height: 300
+            quality: 85
+            placeholder: TRACED_SVG
+            layout: FIXED
+          )
+        }
+      }
+    }
+  }
+}
 `;
 
 PhotographyElementTemplate.propTypes = {
