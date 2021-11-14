@@ -41,8 +41,8 @@ class PhotographyElementTemplate extends React.Component {
             {this.props.data.allFile.edges.map((image, i) => (
               <Link key={i} className="column is-narrow"
                     to={this.props.location.pathname +
-                    image.node.childImageSharp.resolutions.src.split("/")[4].split(".")[0]}>
-                <Img resolutions={image.node.childImageSharp.resolutions} alt="big size photo in the gallery"/>
+                    image.node.childImageSharp.fixed.src.split("/")[4].split(".")[0]}>
+                <Img fixed={image.node.childImageSharp.fixed} alt="big size photo in the gallery"/>
               </Link>
             ))}
           </div>
@@ -96,8 +96,8 @@ export const pageQuery = graphql`
       edges {
         node {
           childImageSharp {
-            resolutions(width: 300, height: 300, quality: 85) {
-              ...GatsbyImageSharpResolutions_tracedSVG
+            fixed(width: 300, height: 300, quality: 85) {
+              ...GatsbyImageSharpFixed_tracedSVG
             }
           }
         }
