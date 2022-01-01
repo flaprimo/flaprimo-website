@@ -3,6 +3,7 @@ import Helmet from "react-helmet";
 import { graphql } from "gatsby";
 import PropTypes from "prop-types";
 import MatrixCanvas from "../components/MatrixCanvas";
+import "bulma/css/bulma.css";
 
 // Window Size
 let defaultHeight
