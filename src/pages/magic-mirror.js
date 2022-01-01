@@ -4,49 +4,33 @@ import { graphql } from "gatsby";
 import PropTypes from "prop-types";
 import MatrixCanvas from "../components/MatrixCanvas";
 
-// const draw = context => {
-//   var sizeWidth = context.canvas.clientWidth;
-//   var sizeHeight = context.canvas.clientHeight;
+// Window Size
+let defaultHeight
+let defaultWidth
 
-//   // Setting up the letters
-//   const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-//   const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-//   const nums = '0123456789';
-  
+if (typeof window !== `undefined`) {
+  defaultHeight = window.innerHeight
+  defaultWidth = window.innerWidth
+}
 
-//   var letters = katakana + latin + nums;
+const useWindowSize = () => {
+  const [dimensions, setDimensions] = useState({
+    windowHeight: defaultHeight,
+    windowWidth: defaultWidth,
+  })
 
-//   letters = letters.split('');
-//   //letters = letters.split('');
+  useEffect(() => {
+    const handler = () => setDimensions({
+      windowHeight: window.innerHeight,
+      windowWidth: window.innerWidth,
+    })
 
-//   // Setting up the columns
-//   var fontSize = 16,
-//   columns = sizeWidth / fontSize;
+    window.addEventListener(`resize`, handler)
+    return () => window.removeEventListener(`resize`, handler)
+  }, [])
 
-//   // Setting up the drops
-//   var drops = [];
-//   for (var i = 0; i < columns; i++) {
-//     drops[i] = 1;
-//   }
-
-//   // Setting up the draw function
-//   function draw1() {
-//     context.fillStyle = 'rgba(0, 0, 0, .1)';
-//     context.fillRect(0, 0, sizeWidth, sizeHeight);
-//     for (var i = 0; i < drops.length; i++) {
-//       var text = letters[Math.floor(Math.random() * letters.length)];
-//       context.fillStyle = '#0f0';
-//       context.fillText(text, i * fontSize, drops[i] * fontSize);
-//       drops[i]++;
-//       if (drops[i] * fontSize > sizeHeight && Math.random() > .95) {
-//         drops[i] = 0;
-//       }
-//     }
-//   }
-
-//   // Loop the animation
-//   setInterval(draw1, 33);
-// };
+  return dimensions
+}
 
 function MagicMirrorPage(props) {
   const siteTitle = props.data.site.siteMetadata.title;
@@ -90,6 +74,8 @@ function MagicMirrorPage(props) {
     }
   }, []);
 
+  const windowSize = useWindowSize();
+
   return (
     <div>
       <Helmet>
@@ -111,7 +97,7 @@ function MagicMirrorPage(props) {
       </section>
       <section ref={thirdSection} className="hero is-white is-fullheight">
         <div className="hero-body" style={{padding: 0}}>
-            <MatrixCanvas height={window.innerHeight} width={window.innerWidth} />
+            <MatrixCanvas height={windowSize.windowHeight} width={windowSize.windowWidth} />
         </div>
       </section> 
     </div>
