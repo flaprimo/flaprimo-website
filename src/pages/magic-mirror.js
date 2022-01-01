@@ -26,8 +26,12 @@ const useWindowSize = () => {
       windowWidth: window.innerWidth,
     })
 
+    window.addEventListener(`load`, handler)
     window.addEventListener(`resize`, handler)
-    return () => window.removeEventListener(`resize`, handler)
+    return () => {
+      window.removeEventListener(`load`, handler);
+      window.removeEventListener(`resize`, handler);
+    }
   }, [])
 
   return dimensions
