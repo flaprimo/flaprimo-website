@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Helmet from "react-helmet";
 import { graphql } from "gatsby";
 import PropTypes from "prop-types";
-import MatrixCanvas from "../components/MatrixCanvas";
 import "bulma/css/bulma.css";
+import cheerio from 'cheerio';
 
 // Window Size
 let defaultHeight
@@ -37,6 +37,31 @@ const useWindowSize = () => {
   return dimensions
 }
 
+// function ArchillectFetch() {
+//   https.get('https://archillect.com/archive', (resp) => {
+//     let data = '';
+
+//     // A chunk of data has been received.
+//     resp.on('data', (chunk) => {
+//       data += chunk;
+//     });
+
+//     // The whole response has been received. Print out the result.
+//     resp.on('end', () => {
+//       const $ = cheerio.load(data);
+//       $('.apple', '#fruits').text();
+//     });
+
+//   }).on("error", (err) => {
+//     console.log("Error: " + err.message);
+//   });
+
+//   return (
+//     <img src="">
+//     </img>
+//   );
+// }
+
 function MatrixYoutube() {
   return (
     <div className="video-background" style={{
@@ -51,7 +76,7 @@ function MatrixYoutube() {
           height: "200vh",
           top: "-40%",
           left: "-50%"
-      }} src="https://www.youtube.com/embed/_Lo6Vup6khc?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&hd=1" width="1080px" frameborder="0" allowfullscreen></iframe>
+      }} src="https://www.youtube.com/embed/_Lo6Vup6khc?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&hd=1&quality=high" height="1080" frameborder="0" allowfullscreen></iframe>
     </div>
   );
 }
