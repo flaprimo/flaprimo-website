@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
+//<MatrixCanvas height={windowSize.windowHeight} width={windowSize.windowWidth} />
 const MatrixCanvas = ({height, width}) => {
   const canvas = useRef();
 

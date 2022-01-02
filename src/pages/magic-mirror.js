@@ -37,6 +37,25 @@ const useWindowSize = () => {
   return dimensions
 }
 
+function MatrixYoutube() {
+  return (
+    <div className="video-background" style={{
+      position: "relative",
+      overflow: "hidden",
+      width: "100vw",
+      height: "100vh"
+    }}>
+      <iframe style={{
+          position: "relative",
+          width: "250vw",
+          height: "200vh",
+          top: "-40%",
+          left: "-50%"
+      }} src="https://www.youtube.com/embed/_Lo6Vup6khc?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&hd=1" width="1080px" frameborder="0" allowfullscreen></iframe>
+    </div>
+  );
+}
+
 function MagicMirrorPage(props) {
   const siteTitle = props.data.site.siteMetadata.title;
   const title = `Magic Mirror | ${siteTitle}`;
@@ -59,15 +78,15 @@ function MagicMirrorPage(props) {
       thirdSection.current.scrollIntoView({ behavior: 'smooth' });
   }, [section]) // <-- here put the parameter to listen
 
-  useEffect(() => {
-    const sectionTimer = setInterval(() => {
-      setSection((section + 1) % 3);
-    }, 5000);
+  // useEffect(() => {
+  //   const sectionTimer = setInterval(() => {
+  //     setSection((section + 1) % 3);
+  //   }, 5000);
 
-    return () => {
-      clearInterval(sectionTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
-    }
-  }, [section]);
+  //   return () => {
+  //     clearInterval(sectionTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
+  //   }
+  // }, [section]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -102,7 +121,7 @@ function MagicMirrorPage(props) {
       </section>
       <section ref={thirdSection} className="hero is-white is-fullheight">
         <div className="hero-body" style={{padding: 0}}>
-            <MatrixCanvas height={windowSize.windowHeight} width={windowSize.windowWidth} />
+            <MatrixYoutube />
         </div>
       </section> 
     </div>
