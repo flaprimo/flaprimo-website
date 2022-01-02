@@ -56,6 +56,26 @@ function MatrixYoutube() {
   );
 }
 
+function Clock() {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000)
+
+    return () => {
+      clearInterval(timer); // Return a funtion to clear the timer so that it will stop being called on unmount
+    }
+  }, []);
+
+  return (
+    <p className="title">
+      {time.toLocaleString()}
+    </p>
+  );
+}
+
 function MagicMirrorPage(props) {
   const siteTitle = props.data.site.siteMetadata.title;
   const title = `Magic Mirror | ${siteTitle}`;
@@ -65,7 +85,6 @@ function MagicMirrorPage(props) {
   const thirdSection = useRef();
 
   const [section, setSection] = useState(0);
-  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
     console.log(section, '- Has changed')
@@ -78,25 +97,15 @@ function MagicMirrorPage(props) {
       thirdSection.current.scrollIntoView({ behavior: 'smooth' });
   }, [section]) // <-- here put the parameter to listen
 
-  // useEffect(() => {
-  //   const sectionTimer = setInterval(() => {
-  //     setSection((section + 1) % 3);
-  //   }, 5000);
-
-  //   return () => {
-  //     clearInterval(sectionTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
-  //   }
-  // }, [section]);
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000)
+    const sectionTimer = setInterval(() => {
+      setSection((section + 1) % 3);
+    }, 5000);
 
     return () => {
-      clearInterval(timer); // Return a funtion to clear the timer so that it will stop being called on unmount
+      clearInterval(sectionTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
     }
-  }, []);
+  }, [section]);
 
   const windowSize = useWindowSize();
 
@@ -114,9 +123,7 @@ function MagicMirrorPage(props) {
       </section>
       <section ref={secondSection} className="hero is-warning is-fullheight">
         <div className="hero-body">
-          <p className="title">
-            {time.toLocaleString()}
-          </p>
+          <Clock />
         </div>
       </section>
       <section ref={thirdSection} className="hero is-white is-fullheight">
