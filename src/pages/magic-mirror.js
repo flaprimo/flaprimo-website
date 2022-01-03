@@ -99,6 +99,7 @@ function ArchillectFetch() {
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center center",
       backgroundSize: "cover",
+      transition: "all 1s ease-in-out",
       background: "linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.8)), url(" + imageUrl + ")"
     }}>
       <div className="archillect-image" style={{
@@ -109,6 +110,7 @@ function ArchillectFetch() {
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center",
         backgroundSize: "contain",
+        transition: "all 1s ease-in-out",
         backdropFilter: "blur(8px)"
       }} />
     </div>
