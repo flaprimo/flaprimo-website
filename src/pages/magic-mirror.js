@@ -78,7 +78,7 @@ function MeteoFetch() {
 
 function ArchillectFetch() {
   const [imageUrl, setImageUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/2/25/Odd-eyed_Turkish_Angora_cat_-_20080830.jpg');
-  const baseUrl = 'https://thingproxy.freeboard.io/fetch/https://archillect.com/'
+  const baseUrl = 'https://archillect.fla-primo-engineer.workers.dev/?https://archillect.com/'
 
   const getArchiveMaxPostId = async() => {
     try {
