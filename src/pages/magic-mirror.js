@@ -41,7 +41,7 @@ const useWindowSize = () => {
 
 function ArchillectFetch() {
   const [imageUrl, setImageUrl] = useState([]);
-  const baseUrl = 'https://archillect.com/'
+  const baseUrl = 'https://cors-proxy.htmldriven.com/?url=https://archillect.com/'
 
   const getArchiveMaxPostId = async() => {
     try {
