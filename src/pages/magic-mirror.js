@@ -38,13 +38,51 @@ const useWindowSize = () => {
   return dimensions
 }
 
+function MeteoFetch() {
+  const [currentMeteo, setCurrentMeteo] = useState([]);
+  const baseUrl = 'https://thingproxy.freeboard.io/fetch/https://www.3bmeteo.com/meteo/roma'
+
+  const getCurrentMeteo = async() => {
+    try {
+      const responsePromise = await fetch(baseUrl);
+      const response = await responsePromise.text();
+      const $ = cheerio.load(response); 
+      const currentMeteo = $('.navDays:nth-child(2) img').attr('alt');
+      console.log(currentMeteo);
+
+      return currentMeteo;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    async function fetchMeteoAPI() {
+      const currentMeteo = await getCurrentMeteo();
+      setCurrentMeteo(currentMeteo);
+    }
+
+    const grabMeteoTimer = setInterval(() => {
+      fetchMeteoAPI();
+    }, 1000 * 3600);
+
+    return () => {
+      clearInterval(grabMeteoTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
+    }
+  }, [currentMeteo]);
+
+  return (
+    <p>{currentMeteo}</p>
+  );
+}
+
 function ArchillectFetch() {
   const [imageUrl, setImageUrl] = useState([]);
   const baseUrl = 'https://thingproxy.freeboard.io/fetch/https://archillect.com/'
 
   const getArchiveMaxPostId = async() => {
     try {
-      const responsePromise = await fetch(baseUrl.concat('archive'));
+      const responsePromise = await fetch(baseUrl.concat('archive'), {mode: 'cors'});
       const response = await responsePromise.text();
       const $ = cheerio.load(response); 
       const maxPostId = $('#archive .post:first').attr('href').substring(1);
@@ -62,7 +100,7 @@ function ArchillectFetch() {
       const postId = Math.floor(Math.random() * (maxPostId - 0) + maxPostId);
 
       try {
-        const responsePromise = await fetch(baseUrl.concat(postId));
+        const responsePromise = await fetch(baseUrl.concat(postId), {mode: 'cors'});
         const response = await responsePromise.text();
         const $ = cheerio.load(response); 
         const imageUrl = $('#ii').attr('src');
@@ -85,7 +123,7 @@ function ArchillectFetch() {
 
     const grabImageTimer = setInterval(() => {
       fetchArchillectAPI();
-    }, 10000);
+    }, 60000);
 
     return () => {
       clearInterval(grabImageTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
@@ -199,6 +237,7 @@ function MagicMirrorPage(props) {
       <section ref={firstSection} className="hero is-fullheight is-primary" >
         <div className="hero-body">
           <Clock />
+          <MeteoFetch />
         </div>
       </section>
       <section ref={secondSection} className="hero is-black is-fullheight">
