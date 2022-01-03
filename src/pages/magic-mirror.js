@@ -77,12 +77,17 @@ function MeteoFetch() {
 }
 
 function ArchillectFetch() {
-  const [imageUrl, setImageUrl] = useState([]);
+  const [imageUrl, setImageUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/2/25/Odd-eyed_Turkish_Angora_cat_-_20080830.jpg');
   const baseUrl = 'https://thingproxy.freeboard.io/fetch/https://archillect.com/'
 
   const getArchiveMaxPostId = async() => {
     try {
-      const responsePromise = await fetch(baseUrl.concat('archive'), {mode: 'cors'});
+      const responsePromise = await fetch(baseUrl.concat('archive'), {
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'text/html'
+        }
+      });
       const response = await responsePromise.text();
       const $ = cheerio.load(response); 
       const maxPostId = $('#archive .post:first').attr('href').substring(1);
@@ -100,7 +105,12 @@ function ArchillectFetch() {
       const postId = Math.floor(Math.random() * (maxPostId - 0) + maxPostId);
 
       try {
-        const responsePromise = await fetch(baseUrl.concat(postId), {mode: 'cors'});
+        const responsePromise = await fetch(baseUrl.concat(postId), {
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'text/html'
+          }
+        });
         const response = await responsePromise.text();
         const $ = cheerio.load(response); 
         const imageUrl = $('#ii').attr('src');
