@@ -4,7 +4,6 @@ import { graphql } from "gatsby";
 import PropTypes from "prop-types";
 import "bulma/css/bulma.css";
 import cheerio from 'cheerio';
-import axios from 'axios';
 import me from "../../static/force-portrait-orientation.css";
 
 // Window Size
@@ -41,12 +40,13 @@ const useWindowSize = () => {
 
 function ArchillectFetch() {
   const [imageUrl, setImageUrl] = useState([]);
-  const baseUrl = 'https://cors-proxy.htmldriven.com/?url=https://archillect.com/'
+  const baseUrl = 'https://thingproxy.freeboard.io/fetch/https://archillect.com/'
 
   const getArchiveMaxPostId = async() => {
     try {
-      const response = await axios.get(baseUrl + 'archive');
-      const $ = cheerio.load(response.data); 
+      const responsePromise = await fetch(baseUrl.concat('archive'));
+      const response = await responsePromise.text();
+      const $ = cheerio.load(response); 
       const maxPostId = $('#archive .post:first').attr('href').substring(1);
       console.log(maxPostId);
       
@@ -62,8 +62,9 @@ function ArchillectFetch() {
       const postId = Math.floor(Math.random() * (maxPostId - 0) + maxPostId);
 
       try {
-        const response = await axios.get(baseUrl.concat(postId));
-        const $ = cheerio.load(response.data); 
+        const responsePromise = await fetch(baseUrl.concat(postId));
+        const response = await responsePromise.text();
+        const $ = cheerio.load(response); 
         const imageUrl = $('#ii').attr('src');
         console.log(imageUrl);
         
@@ -72,7 +73,7 @@ function ArchillectFetch() {
         console.error(error);
       }
     } else {
-      return 'https://www.rd.com/wp-content/uploads/2021/01/GettyImages-1175550351.jpg';
+      return 'https://upload.wikimedia.org/wikipedia/commons/2/25/Odd-eyed_Turkish_Angora_cat_-_20080830.jpg';
     }
   }
 
@@ -195,7 +196,7 @@ function MagicMirrorPage(props) {
         <title>{title}</title>
         <html className="force-portrait-orientation" lang="en-US"/>
       </Helmet>
-      <section ref={firstSection} className="hero is-danger is-fullheight">
+      <section ref={firstSection} className="hero is-fullheight is-primary" >
         <div className="hero-body">
           <Clock />
         </div>

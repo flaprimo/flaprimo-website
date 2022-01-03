@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "author": "Flavio Primo",
   "dependencies": {
-    "axios": "^0.24.0",
     "bluebird": "^3.7.2",
     "bulma": "^0.9.3",
     "bulma-extensions": "^6.2.7",
