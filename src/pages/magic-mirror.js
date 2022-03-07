@@ -200,7 +200,7 @@ function Clock() {
 
   return (
     <p className="is-size-1 has-text-weight-bold">
-      {time.toLocaleString()}
+      {time.toLocaleString("it-IT", {timeZone: "Europe/Rome"})}
     </p>
   );
 }
@@ -211,7 +211,6 @@ function MagicMirrorPage(props) {
 
   const firstSection = useRef();
   const secondSection = useRef();
-  const thirdSection = useRef();
 
   const [section, setSection] = useState(0);
 
@@ -222,13 +221,11 @@ function MagicMirrorPage(props) {
       firstSection.current.scrollIntoView({ behavior: 'smooth' });
     else if (section === 1)
       secondSection.current.scrollIntoView({ behavior: 'smooth' });
-    else if (section === 2)
-      thirdSection.current.scrollIntoView({ behavior: 'smooth' });
   }, [section]) // <-- here put the parameter to listen
 
   useEffect(() => {
     const sectionTimer = setInterval(() => {
-      setSection((section + 1) % 3);
+      setSection((section + 1) % 2);
     }, 5000);
 
     return () => {
@@ -255,11 +252,6 @@ function MagicMirrorPage(props) {
           <ArchillectFetch />
         </div>
       </section>
-      <section ref={thirdSection} className="hero is-white is-fullheight">
-        <div className="hero-body" style={{padding: 0}}>
-            <MatrixYoutube />
-        </div>
-      </section> 
     </div>
   );
 }
