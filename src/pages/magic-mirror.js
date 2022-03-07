@@ -133,7 +133,7 @@ function ArchillectFetch() {
 
     const grabImageTimer = setInterval(() => {
       fetchArchillectAPI();
-    }, 60000);
+    }, 120000);
 
     return () => {
       clearInterval(grabImageTimer); // Return a funtion to clear the timer so that it will stop being called on unmount
@@ -241,10 +241,9 @@ function MagicMirrorPage(props) {
         <title>{title}</title>
         <html className="force-portrait-orientation" lang="en-US"/>
       </Helmet>
-      <section ref={firstSection} className="hero is-fullheight is-primary" >
+      <section ref={firstSection} className="hero is-fullheight is-black" >
         <div className="hero-body">
           <Clock />
-          <MeteoFetch />
         </div>
       </section>
       <section ref={secondSection} className="hero is-black is-fullheight">
