@@ -7,63 +7,63 @@ module.exports = {
     nav: [
       {
         title: "Home",
-        url: "/"
+        url: "/",
       },
       {
         title: "Blog",
-        url: "/blog"
+        url: "/blog",
       },
       {
         title: "Photography",
-        url: "/photography"
+        url: "/photography",
       },
       {
         title: "About",
-        url: "/about"
-      }
+        url: "/about",
+      },
     ],
     social: [
       {
         title: "Facebook",
         user: "flaprimo1",
-        baseurl: "https://www.facebook.com/"
+        baseurl: "https://www.facebook.com/",
       },
       {
         title: "LinkedIn",
         user: "flavioprimo",
-        baseurl: "https://linkedin.com/in/"
+        baseurl: "https://linkedin.com/in/",
       },
       {
         title: "GitHub",
         user: "flaprimo",
-        baseurl: "https://github.com/"
+        baseurl: "https://github.com/",
       },
       {
         title: "Twitter",
         user: "flaprimo1",
-        baseurl: "https://twitter.com/"
+        baseurl: "https://twitter.com/",
       },
       {
         title: "Instagram",
         user: "flaprimo1",
-        baseurl: "https://instagram.com/"
+        baseurl: "https://instagram.com/",
       },
       {
         title: "Spotify",
         user: "1168817494",
-        baseurl: "https://open.spotify.com/user/"
+        baseurl: "https://open.spotify.com/user/",
       },
       {
         title: "Mastodon",
         user: "@flaprimo",
-        baseurl: "https://mastodon.social/"
+        baseurl: "https://mastodon.social/",
       },
       {
         title: "Keybase",
         user: "flaprimo",
-        baseurl: "https://keybase.io/"
-      }
-    ]
+        baseurl: "https://keybase.io/",
+      },
+    ],
   },
   pathPrefix: "/",
   plugins: [
@@ -71,15 +71,15 @@ module.exports = {
       resolve: "gatsby-source-filesystem",
       options: {
         path: `${__dirname}/content/blog`,
-        name: "blog"
-      }
+        name: "blog",
+      },
     },
     {
       resolve: "gatsby-source-filesystem",
       options: {
         path: `${__dirname}/content/photography`,
-        name: "photography"
-      }
+        name: "photography",
+      },
     },
     {
       resolve: "gatsby-transformer-remark",
@@ -90,18 +90,18 @@ module.exports = {
             options: {
               maxWidth: 590,
               quality: 90,
-              linkImagesToOriginal: true
-            }
+              linkImagesToOriginal: true,
+            },
           },
           {
             resolve: "gatsby-remark-responsive-iframe",
             options: {
-              wrapperStyle: "margin-bottom: 1.0725rem"
-            }
+              wrapperStyle: "margin-bottom: 1.0725rem",
+            },
           },
           "gatsby-remark-prismjs",
           "gatsby-remark-copy-linked-files",
-          "gatsby-remark-smartypants"
+          "gatsby-remark-smartypants",
           // {
           //   resolve: 'gatsby-remark-external-links',
           //   options: {
@@ -109,8 +109,8 @@ module.exports = {
           //     rel: 'nofollow noopener noreferrer',
           //   }
           // }
-        ]
-      }
+        ],
+      },
     },
 
     {
@@ -123,18 +123,18 @@ module.exports = {
         background_color: "red",
         theme_color: "red",
         display: "standalone",
-        icon: `${__dirname}/static/logo.svg`
-      }
+        icon: `${__dirname}/static/logo.svg`,
+      },
     },
     "gatsby-plugin-catch-links",
     "gatsby-transformer-sharp",
     "gatsby-plugin-sharp",
     "gatsby-plugin-nprogress",
     "gatsby-plugin-purgecss",
-    "gatsby-plugin-offline",
+    // "gatsby-plugin-offline",
     "gatsby-plugin-sitemap",
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
-    `gatsby-transformer-sharp`
-  ]
+    `gatsby-transformer-sharp`,
+  ],
 };

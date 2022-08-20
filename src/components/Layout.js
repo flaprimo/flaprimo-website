@@ -10,9 +10,9 @@ class Layout extends React.Component {
     const { location, children } = this.props;
     return (
       <div>
-        <Nav location={location}/>
+        <Nav location={location} />
         {children}
-        <Footer/>
+        <Footer />
       </div>
     );
   }
@@ -21,11 +21,6 @@ class Layout extends React.Component {
 export default Layout;
 
 Layout.propTypes = {
-  siteTitle: PropTypes.string.isRequired,
-  contentTitle: PropTypes.string.isRequired,
   location: PropTypes.object.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.object
-  ]).isRequired
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
 };
