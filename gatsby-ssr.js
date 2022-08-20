@@ -6,16 +6,16 @@
 
 // You can delete this file if you're not using it
 
-exports.onRenderBody = ({ pathname, setHtmlAttributes, setBodyAttributes }) => {
+exports.onRenderBody = ({ pathname, setHtmlAttributes }) => {
   setHtmlAttributes({ lang: "en-US" });
 
   switch (pathname) {
     case "/magic-mirror/":
       setHtmlAttributes({ className: "force-portrait-orientation" });
       break;
-    case /^\/photography\/.*?\/.*/i.test(pathname):
+    case /^\/photography\/.*?\/.*/.test(pathname):
       break;
     default:
-      setBodyAttributes({ className: "has-navbar-fixed-top" });
+      setHtmlAttributes({ style: "padding-top: 3.25rem;" }); // equivalent to .has-navbar-fixed-top
   }
 };
