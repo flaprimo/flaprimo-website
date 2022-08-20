@@ -67,7 +67,6 @@ module.exports = {
   },
   pathPrefix: "/",
   plugins: [
-    "gatsby-plugin-react-helmet",
     {
       resolve: "gatsby-source-filesystem",
       options: {

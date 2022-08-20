@@ -13,17 +13,15 @@ const Content = styled.div`
   & {
     word-wrap: break-word;
     overflow-wrap: break-word;
-    
+
     & pre {
       overflow-x: scroll;
     }
   }
 `;
 
-
 class BlogElementTemplate extends React.Component {
   render() {
-    const siteTitle = this.props.data.site.siteMetadata.title;
     const { previous, next } = this.props.pageContext;
 
     const blogElement = this.props.data.markdownRemark;
@@ -34,25 +32,30 @@ class BlogElementTemplate extends React.Component {
     const html = blogElement.html;
 
     return (
-      <Layout contentTitle={title} siteTitle={siteTitle} location={this.props.location}>
-        <Seo title={title}
-             description={blogElement.excerpt}
-             url={this.props.location.href}
-             type="article"
-        />
-        <Header title={title} subtitle={date + " - " + category}/>
+      <Layout location={this.props.location}>
+        <Header title={title} subtitle={date + " - " + category} />
 
-        <div className="container section" style={{
-          backgroundColor: "rgba(255,255,255, 0.9)"
-        }}>
+        <div
+          className="container section"
+          style={{
+            backgroundColor: "rgba(255,255,255, 0.9)",
+          }}
+        >
           <div className="columns is-centered">
             <div className="column is-7">
-              <Content className="content" dangerouslySetInnerHTML={{ __html: html }}/>
+              <Content
+                className="content"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
 
-              <Tags tags={tags}/>
+              <Tags tags={tags} />
 
-              <NextPrevElements type={"/blog"} previous={previous} next={next}/>
-              <Comments title={title} type="blog"/>
+              <NextPrevElements
+                type={"/blog"}
+                previous={previous}
+                next={next}
+              />
+              <Comments title={title} type="blog" />
             </div>
           </div>
         </div>
@@ -61,15 +64,19 @@ class BlogElementTemplate extends React.Component {
   }
 }
 
+export const Head = ({ location, data }) => (
+  <Seo
+    title={data.markdownRemark.frontmatter.title}
+    url={location.pathname}
+    description={data.markdownRemark.excerpt}
+    type="article"
+  />
+);
+
 export default BlogElementTemplate;
 
 export const pageQuery = graphql`
   query blogElementQuery($slug: String!) {
-    site {
-      siteMetadata {
-        title
-      }
-    }
     markdownRemark(fields: { slug: { eq: $slug } }) {
       id
       excerpt
@@ -87,16 +94,11 @@ export const pageQuery = graphql`
 BlogElementTemplate.propTypes = {
   location: PropTypes.object.isRequired,
   data: PropTypes.shape({
-    site: PropTypes.shape({
-      siteMetadata: PropTypes.shape({
-        title: PropTypes.string.isRequired
-      }).isRequired
-    }).isRequired,
-    markdownRemark: PropTypes.object.isRequired
+    markdownRemark: PropTypes.object.isRequired,
   }).isRequired,
   pageContext: PropTypes.shape({
     slug: PropTypes.string.isRequired,
     next: PropTypes.object,
-    previous: PropTypes.object
-  }).isRequired
+    previous: PropTypes.object,
+  }).isRequired,
 };

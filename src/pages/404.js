@@ -1,24 +1,15 @@
 import React, { Component } from "react";
 import Layout from "../components/Layout";
 import PropTypes from "prop-types";
-import { graphql } from "gatsby";
 import Header from "../components/Header";
 import Seo from "../components/Seo";
 
+const contentTitle = "Page not found";
 class NotFoundPage extends Component {
   render() {
-    const contentTitle = "Page not found";
-    const siteTitle = this.props.data.site.siteMetadata.title;
-
     return (
-      <Layout siteTitle={siteTitle} contentTitle={contentTitle} location={this.props.location}>
-        <Seo title={contentTitle + " | " + siteTitle}
-             description={"Whoooooops! This page doesn't exist.. the sadness."}
-             url={this.props.location.href}
-             type="website"
-        />
-        <Header title={contentTitle} subtitle="Page not found"/>
-
+      <Layout location={this.props.location}>
+        <Header title={contentTitle} subtitle="Page not found" />
         <div className="container section">
           <div className="columns is-centered">
             <div className="content column is-7">
@@ -31,25 +22,17 @@ class NotFoundPage extends Component {
   }
 }
 
-export default NotFoundPage;
+export const Head = ({ location }) => (
+  <Seo
+    title={contentTitle}
+    description={"Whoooooops! This page doesn't exist.. the sadness."}
+    url={location.pathname}
+    type="website"
+  />
+);
 
-export const pageQuery = graphql`
-  query notFoundPageQuery {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-  }
-`;
+export default NotFoundPage;
 
 NotFoundPage.propTypes = {
   location: PropTypes.object.isRequired,
-  data: PropTypes.shape({
-    site: PropTypes.shape({
-      siteMetadata: PropTypes.shape({
-        title: PropTypes.string.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired
 };

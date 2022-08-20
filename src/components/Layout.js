@@ -1,5 +1,4 @@
 import React from "react";
-import Helmet from "react-helmet";
 import PropTypes from "prop-types";
 
 import Footer from "./Footer";
@@ -8,16 +7,9 @@ import "bulma/css/bulma.css";
 
 class Layout extends React.Component {
   render() {
-    const { siteTitle, contentTitle, location, children } = this.props;
-    const title = `${contentTitle} | ${siteTitle}`;
+    const { location, children } = this.props;
     return (
       <div>
-        <Helmet>
-          <title>{title}</title>
-          <meta name="google-site-verification" content="Y8B6_MX40JiCVBbuwf-2tVFuGbifcfFi2tBlSPxhJDE"/>
-          <html className="has-navbar-fixed-top" lang="en-US"/>
-        </Helmet>
-
         <Nav location={location}/>
         {children}
         <Footer/>

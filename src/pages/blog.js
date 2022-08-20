@@ -6,20 +6,14 @@ import Header from "../components/Header";
 import PropTypes from "prop-types";
 import Seo from "../components/Seo";
 
+const contentTitle = "Blog";
 class BlogPage extends React.Component {
   render() {
-    const siteTitle = this.props.data.site.siteMetadata.title;
-    const contentTitle = "Blog";
     const blogElements = this.props.data.allMarkdownRemark.edges;
 
     return (
-      <Layout siteTitle={siteTitle} contentTitle={contentTitle} location={this.props.location}>
-        <Seo title={contentTitle + " | " + siteTitle}
-             description={"Flavio's blog, lot of interesting and programming nerdy stuff!"}
-             url={this.props.location.href}
-             type="website"
-        />
-        <Header title={contentTitle} subtitle="Techie 'n' nerdy stuff"/>
+      <Layout location={this.props.location}>
+        <Header title={contentTitle} subtitle="Techie 'n' nerdy stuff" />
 
         <div className="container section">
           <div className="columns is-multiline is-centered">
@@ -32,22 +26,21 @@ class BlogPage extends React.Component {
 
               return (
                 <div key={slug} className="column is-7">
-                  <div className="card"
-                       style={{
-                         display: "flex",
-                         minHeight: "100%",
-                         flexDirection: "column"
-                       }}>
-
+                  <div
+                    className="card"
+                    style={{
+                      display: "flex",
+                      minHeight: "100%",
+                      flexDirection: "column",
+                    }}
+                  >
                     <div className="card-content" style={{ flex: "1" }}>
                       <h3 className="is-size-4">
-                        <Link to={"/blog" + slug}>
-                          {title}
-                        </Link>
+                        <Link to={"/blog" + slug}>{title}</Link>
                       </h3>
-                      <br/>
+                      <br />
                       <div className="content">
-                        <p dangerouslySetInnerHTML={{ __html: excerpt }}/>
+                        <p dangerouslySetInnerHTML={{ __html: excerpt }} />
                       </div>
                     </div>
 
@@ -66,19 +59,25 @@ class BlogPage extends React.Component {
   }
 }
 
+export const Head = ({ location }) => (
+  <Seo
+    title={contentTitle}
+    description={
+      "Flavio's blog, lot of interesting and programming nerdy stuff!"
+    }
+    url={location.pathname}
+    type="website"
+  />
+);
+
 export default BlogPage;
 
 export const pageQuery = graphql`
   query blogPageQuery {
-    site {
-      siteMetadata {
-        title
-      }
-    }
     allMarkdownRemark(
-      filter: {fileAbsolutePath: {regex: "/blog/"}},
-      sort: { fields: [frontmatter___date], order: DESC })
-    {
+      filter: { fileAbsolutePath: { regex: "/blog/" } }
+      sort: { fields: [frontmatter___date], order: DESC }
+    ) {
       edges {
         node {
           excerpt
@@ -100,11 +99,6 @@ export const pageQuery = graphql`
 BlogPage.propTypes = {
   location: PropTypes.object.isRequired,
   data: PropTypes.shape({
-    site: PropTypes.shape({
-      siteMetadata: PropTypes.shape({
-        title: PropTypes.string.isRequired
-      }).isRequired
-    }).isRequired,
-    allMarkdownRemark: PropTypes.object.isRequired
-  }).isRequired
+    allMarkdownRemark: PropTypes.object.isRequired,
+  }).isRequired,
 };

@@ -1,21 +1,20 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { StaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
-import seoImageBg from "../../static/bg_seo.png"
+import React from "react";
+import { StaticQuery, graphql } from "gatsby";
+import PropTypes from "prop-types";
+import seoImageBg from "../../static/bg_seo.png";
 
-const Seo = ({title, description, url, image, type}) => (
+const Seo = ({ title, description, url, image, type }) => (
   <StaticQuery
     query={graphql`
       query SeoQuery {
         site {
           siteMetadata {
-            title,
-            description,
-            author,
-            siteUrl,
+            title
+            description
+            author
+            siteUrl
             social {
-              title,
+              title
               user
             }
           }
@@ -23,37 +22,43 @@ const Seo = ({title, description, url, image, type}) => (
       }
     `}
     render={({ site: { siteMetadata: seo } }) => {
-      const seoTitle = title || seo.title;
+      const seoTitle =
+        title !== undefined ? title + " | " + seo.title : seo.title;
       const seoDescription = description || seo.description;
-      const seoImage = seo.siteUrl.replace(/\/$/, "") + (image ? image : seoImageBg);
+      const seoImage =
+        seo.siteUrl.replace(/\/$/, "") + (image ? image : seoImageBg);
       const seoUrl = url || seo.siteUrl;
       const seoType = type;
-      const twitterAuthor = "@" +
-        seo.social.filter(s => s.title === "Twitter")[0].user;
+      const twitterAuthor =
+        "@" + seo.social.filter((s) => s.title === "Twitter")[0].user;
 
       return (
-        <React.Fragment>
-          <Helmet>
-            {/* General tags */}
-            <title>{seoTitle}</title>
-            <meta name="description" content={seoDescription} />
-            <meta name="image" content={seoImage} />
+        <>
+          {/* General tags */}
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+          <meta name="image" content={seoImage} />
 
-            {/* OpenGraph tags */}
-            <meta property="og:url" content={seoUrl} />
-            <meta property="og:type" content={seoType} />
-            <meta property="og:title" content={seoTitle} />
-            <meta property="og:description" content={seoDescription} />
-            <meta property="og:image" content={seoImage} />
+          {/* OpenGraph tags */}
+          <meta property="og:url" content={seoUrl} />
+          <meta property="og:type" content={seoType} />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content={seoImage} />
 
-            {/* Twitter Card tags */}
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:creator" content={twitterAuthor} />
-            <meta name="twitter:title" content={seoTitle} />
-            <meta name="twitter:description" content={seoDescription} />
-            <meta name="twitter:image" content={seoImage} />
-          </Helmet>
-        </React.Fragment>
+          {/* Twitter Card tags */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:creator" content={twitterAuthor} />
+          <meta name="twitter:title" content={seoTitle} />
+          <meta name="twitter:description" content={seoDescription} />
+          <meta name="twitter:image" content={seoImage} />
+
+          {/* Site Verification */}
+          <meta
+            name="google-site-verification"
+            content="Y8B6_MX40JiCVBbuwf-2tVFuGbifcfFi2tBlSPxhJDE"
+          />
+        </>
       );
     }}
   />
@@ -64,7 +69,7 @@ Seo.propTypes = {
   description: PropTypes.string,
   url: PropTypes.string,
   type: PropTypes.string,
-  image: PropTypes.string
+  image: PropTypes.string,
 };
 
 export default Seo;

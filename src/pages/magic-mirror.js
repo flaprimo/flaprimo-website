@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Helmet from "react-helmet";
 import { graphql } from "gatsby";
 import PropTypes from "prop-types";
 import "bulma/css/bulma.css";
@@ -205,10 +204,7 @@ function Clock() {
   );
 }
 
-function MagicMirrorPage(props) {
-  const siteTitle = props.data.site.siteMetadata.title;
-  const title = `Magic Mirror | ${siteTitle}`;
-
+function MagicMirrorPage() {
   const firstSection = useRef();
   const secondSection = useRef();
 
@@ -237,10 +233,6 @@ function MagicMirrorPage(props) {
 
   return (
     <div>
-      <Helmet>
-        <title>{title}</title>
-        <html className="force-portrait-orientation" lang="en-US"/>
-      </Helmet>
       <section ref={firstSection} className="hero is-fullheight is-black" >
         <div className="hero-body">
           <Clock />
@@ -254,6 +246,10 @@ function MagicMirrorPage(props) {
     </div>
   );
 }
+
+export const Head = ({ data }) => (
+  <title>Magic Mirror | {data.site.siteMetadata.title}</title>
+)
 
 export default MagicMirrorPage;
 
