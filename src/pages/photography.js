@@ -90,7 +90,7 @@ export const pageQuery = graphql`
   query photographyPageQuery {
     allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/photography/" } }
-      sort: { fields: [frontmatter___date], order: DESC }
+      sort: { frontmatter: { date: DESC } }
     ) {
       edges {
         node {
@@ -109,7 +109,7 @@ export const pageQuery = graphql`
                   width: 900
                   quality: 85
                   tracedSVGOptions: { color: "#2B2B2F" }
-                  placeholder: TRACED_SVG
+                  placeholder: DOMINANT_COLOR
                   layout: CONSTRAINED
                 )
               }

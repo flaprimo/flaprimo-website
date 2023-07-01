@@ -1,8 +1,6 @@
 import React from "react";
-import { graphql } from "gatsby";
+import { graphql, Link } from "gatsby";
 import PropTypes from "prop-types";
-import "bulma/css/bulma.css";
-import Link from "gatsby-link";
 import Seo from "../components/Seo";
 import styled from "styled-components";
 
@@ -54,15 +52,15 @@ function getImagePreload(image) {
 
 class PhotoElementTemplate extends React.Component {
   render() {
+    const currentPathName = this.props.location.pathname;
+    const penultimateIndex = currentPathName.lastIndexOf('/', currentPathName.lastIndexOf('/') - 1);
+    const baseUrl = currentPathName.substring(0, penultimateIndex);
+
     const { previous, next } = this.props.pageContext;
-    const baseUrl = this.props.location.pathname.substring(
-      0,
-      this.props.location.pathname.lastIndexOf("/") + 1
-    );
 
     function getImageButton(image, direction) {
       const imagePage =
-        baseUrl + image.relativePath.split("/")[1].split(".")[0];
+        baseUrl + "/" + image.relativePath.split("/")[1].split(".")[0] + "/";
       return (
         <p className="control">
           <Link to={imagePage} replace className="button is-dark">

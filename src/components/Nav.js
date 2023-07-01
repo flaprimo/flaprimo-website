@@ -1,7 +1,6 @@
 import React from "react";
-import Link from "gatsby-link";
 import PropTypes from "prop-types";
-import { StaticQuery, graphql } from "gatsby";
+import { StaticQuery, graphql, Link } from "gatsby";
 import logo from "../../static/logo.svg";
 
 class Nav extends React.Component {

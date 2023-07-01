@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { graphql } from "gatsby";
 import PropTypes from "prop-types";
-import "bulma/css/bulma.css";
 import cheerio from 'cheerio';
 import me from "../../static/force-portrait-orientation.css";
 

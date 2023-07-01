@@ -72,29 +72,27 @@ export const Head = ({ location }) => (
 
 export default BlogPage;
 
-export const pageQuery = graphql`
-  query blogPageQuery {
-    allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/blog/" } }
-      sort: { fields: [frontmatter___date], order: DESC }
-    ) {
-      edges {
-        node {
-          excerpt
-          fields {
-            slug
-          }
-          frontmatter {
-            title
-            date(formatString: "DD MMMM, YYYY")
-            category
-            tags
-          }
+export const pageQuery = graphql`query blogPageQuery {
+  allMarkdownRemark(
+    filter: {fileAbsolutePath: {regex: "/blog/"}}
+    sort: {frontmatter: {date: DESC}}
+  ) {
+    edges {
+      node {
+        excerpt
+        fields {
+          slug
+        }
+        frontmatter {
+          title
+          date(formatString: "DD MMMM, YYYY")
+          category
+          tags
         }
       }
     }
   }
-`;
+}`;
 
 BlogPage.propTypes = {
   location: PropTypes.object.isRequired,

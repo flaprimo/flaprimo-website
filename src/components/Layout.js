@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import Footer from "./Footer";
 import Nav from "./Nav";
-import "bulma/css/bulma.css";
 
 class Layout extends React.Component {
   render() {

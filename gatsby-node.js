@@ -71,57 +71,53 @@ exports.createPages = ({ graphql, actions }) => {
   return new Promise((resolve, reject) => {
     resolve(
       graphql(
-        `
-        {
-          blog: allMarkdownRemark(
-            filter: {fileAbsolutePath: {regex: "/blog/"}},
-            sort: {fields: [frontmatter___date], order: DESC})
-          {
-            edges {
-              node {
-                fields {
-                  slug
-                }
-                frontmatter {
-                  date(formatString: "DD MMMM YYYY")
-                }
-              }
-            }
-          }
-          photography: allMarkdownRemark(
-            filter: {fileAbsolutePath: {regex: "/photography/"}},
-            sort: {fields: [frontmatter___date], order: DESC})
-          {            
-            edges {
-              node {
-                fields {
-                  slug
-                }
-                frontmatter {
-                  date(formatString: "DD MMMM YYYY")
-                }
-              }
-            }
-          }
-          photo: allFile(filter: {
-            sourceInstanceName: {eq: "photography"},
-            internal: {mediaType: {eq: "image/jpeg"}}
-          },
-          sort: {fields: [name], order: DESC})
-          {
-            edges {
-              node {
-                relativePath
-                childImageSharp {
-                  resize(width: 1000) {
-                    src
-                  }
-                }
-              }
-            }
+        `{
+  blog: allMarkdownRemark(
+    filter: {fileAbsolutePath: {regex: "/blog/"}}
+    sort: {frontmatter: {date: DESC}}
+  ) {
+    edges {
+      node {
+        fields {
+          slug
+        }
+        frontmatter {
+          date(formatString: "DD MMMM YYYY")
+        }
+      }
+    }
+  }
+  photography: allMarkdownRemark(
+    filter: {fileAbsolutePath: {regex: "/photography/"}}
+    sort: {frontmatter: {date: DESC}}
+  ) {
+    edges {
+      node {
+        fields {
+          slug
+        }
+        frontmatter {
+          date(formatString: "DD MMMM YYYY")
+        }
+      }
+    }
+  }
+  photo: allFile(
+    filter: {sourceInstanceName: {eq: "photography"}, internal: {mediaType: {eq: "image/jpeg"}}}
+    sort: {name: DESC}
+  ) {
+    edges {
+      node {
+        relativePath
+        childImageSharp {
+          resize(width: 1000) {
+            src
           }
         }
-        `
+      }
+    }
+  }
+}`
       ).then(result => {
         if (result.errors) {
           console.log(result.errors);

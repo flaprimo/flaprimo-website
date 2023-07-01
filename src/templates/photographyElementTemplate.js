@@ -1,12 +1,11 @@
 import React from "react";
-import { graphql } from "gatsby";
+import { graphql, Link } from "gatsby";
 import Layout from "../components/Layout";
 import PropTypes from "prop-types";
 import NextPrevElements from "../components/NextPrevElements";
 import Tags from "../components/Tags";
 import { getImage, GatsbyImage } from "gatsby-plugin-image";
 import Header from "../components/Header";
-import Link from "gatsby-link";
 import Seo from "../components/Seo";
 import { getSrc } from "gatsby-plugin-image";
 
@@ -104,7 +103,7 @@ export const pageQuery = graphql`
         internal: { mediaType: { eq: "image/jpeg" } }
         absolutePath: { regex: $slug }
       }
-      sort: { fields: [name], order: ASC }
+      sort: { name: ASC }
     ) {
       edges {
         node {
@@ -113,7 +112,7 @@ export const pageQuery = graphql`
               width: 300
               height: 300
               quality: 85
-              placeholder: TRACED_SVG
+              placeholder: DOMINANT_COLOR
               layout: FIXED
             )
           }
