@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StaticQuery, graphql, Link } from "gatsby";
+import { useStaticQuery, graphql, Link } from "gatsby";
 import logo from "../../static/logo.svg";
 
 class Nav extends React.Component {
@@ -11,33 +11,46 @@ class Nav extends React.Component {
 
   render() {
     const title = this.props.data.site.siteMetadata.title;
-    const nav = this.props.data.site.siteMetadata.nav.map((navitem, i) =>
-      <Link key={i} className={"navbar-item" +
-      ("/" + this.props.location.pathname.split('/')[1] === navitem.url ? " is-active" : "")} to={navitem.url}>
+    const nav = this.props.data.site.siteMetadata.nav.map((navitem, i) => (
+      <Link
+        key={i}
+        className={
+          "navbar-item" +
+          ("/" + this.props.location.pathname.split("/")[1] === navitem.url
+            ? " is-active"
+            : "")
+        }
+        to={navitem.url}
+      >
         {navitem.title}
       </Link>
-    );
+    ));
 
     return (
       <nav className="navbar is-black is-fixed-top">
         <div className="container">
           <div className="navbar-brand">
             <Link className="navbar-item" to={"/"}>
-              <img style={{ "height": "28px" }} src={logo} alt="logo"/>
+              <img style={{ height: "28px" }} src={logo} alt="logo" />
               &emsp;
-              <b>{ title }</b>
+              <b>{title}</b>
             </Link>
-            <span className={"navbar-burger burger" + (this.state.visible ? " is-active" : "")}
-                  onClick={this.toggleBurgerOnClick}>
-            <span/>
-            <span/>
-            <span/>
-          </span>
+            <span
+              className={
+                "navbar-burger burger" +
+                (this.state.visible ? " is-active" : "")
+              }
+              onClick={this.toggleBurgerOnClick}
+            >
+              <span />
+              <span />
+              <span />
+            </span>
           </div>
-          <div className={"navbar-menu" + (this.state.visible ? " is-active" : "")}>
-            <div className="navbar-end">
-              {nav}
-            </div>
+          <div
+            className={"navbar-menu" + (this.state.visible ? " is-active" : "")}
+          >
+            <div className="navbar-end">{nav}</div>
           </div>
         </div>
       </nav>
@@ -54,38 +67,55 @@ class Nav extends React.Component {
 
   toggleBurgerOnClick = () => {
     this.setState({
-      visible: !this.state.visible
+      visible: !this.state.visible,
     });
   };
 
   toggleBurgerOnResize = () => {
     if (window.innerWidth > 1021) {
       this.setState({
-        visible: false
+        visible: false,
       });
     }
   };
 }
 
 /* Query */
-export default props => (
-  <StaticQuery
-    query={graphql`
-      query NavQuery {
-        site {
-          siteMetadata {
-            title,
-            nav {
-              title,
-              url
-            }
+export default function Title() {
+  const data = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+          nav {
+            title
+            url
           }
         }
       }
-    `}
-    render={data => <Nav data={data} {...props} />}
-  />
-)
+    }
+  `);
+
+  return <Nav data={data} {...props} />;
+}
+// export default props => (
+//   <StaticQuery
+//     query={graphql`
+//       query NavQuery {
+//         site {
+//           siteMetadata {
+//             title,
+//             nav {
+//               title,
+//               url
+//             }
+//           }
+//         }
+//       }
+//     `}
+//     render={data => <Nav data={data} {...props} />}
+//   />
+// )
 
 Nav.propTypes = {
   location: PropTypes.object.isRequired,
@@ -93,8 +123,8 @@ Nav.propTypes = {
     site: PropTypes.shape({
       siteMetadata: PropTypes.shape({
         title: PropTypes.string.isRequired,
-        nav: PropTypes.array.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired
+        nav: PropTypes.array.isRequired,
+      }).isRequired,
+    }).isRequired,
+  }).isRequired,
 };
