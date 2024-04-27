@@ -1,0 +1,13 @@
+http://flaprimo.netlify.com/* https://flavioprimo.xyz/:splat 301
+
+https://flaprimo.netlify.com/* https://flavioprimo.xyz/:splat 301
+
+/programming-languages/* /blog/:splat 301
+
+/arduino/* /blog/:splat 301
+
+/os/windows/* /blog/:splat 301
+
+/os/* /blog/:splat 301
+
+/university/* /blog/:splat 301
