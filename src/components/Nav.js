@@ -81,7 +81,7 @@ class Nav extends React.Component {
 }
 
 /* Query */
-export default function Title() {
+export default function Title(props) {
   const data = useStaticQuery(graphql`
     query {
       site {
@@ -98,24 +98,24 @@ export default function Title() {
 
   return <Nav data={data} {...props} />;
 }
-// export default props => (
+// export default (props) => (
 //   <StaticQuery
 //     query={graphql`
 //       query NavQuery {
 //         site {
 //           siteMetadata {
-//             title,
+//             title
 //             nav {
-//               title,
+//               title
 //               url
 //             }
 //           }
 //         }
 //       }
 //     `}
-//     render={data => <Nav data={data} {...props} />}
+//     render={(data) => <Nav data={data} {...props} />}
 //   />
-// )
+// );
 
 Nav.propTypes = {
   location: PropTypes.object.isRequired,
