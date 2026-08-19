@@ -8,7 +8,6 @@ export const site = {
   /** Default Open Graph / Twitter card image, served from `public/`. */
   seoImage: "/bg_seo.png",
   googleSiteVerification: "Y8B6_MX40JiCVBbuwf-2tVFuGbifcfFi2tBlSPxhJDE",
-  disqusShortname: "flavioprimo",
 } as const;
 
 /** URLs carry a trailing slash to match `trailingSlash: "always"`. */

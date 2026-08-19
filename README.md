@@ -87,7 +87,7 @@ can also be run alone, but they read `dist/`, so build first.
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run check`           | type errors in `.astro` and `.ts`                                                                                                 |
 | `npm run check:build`     | broken internal links, missing assets, wrong trailing slashes, added or dropped routes, invalid `_redirects` rules, sitemap drift |
-| `npm run check:highlight` | code fences that silently fell back to plaintext, backslash escapes inside fences                                                 |
+| `npm run check:highlight` | code fences that fell back to plaintext, fences missing their dark-mode colours, backslash escapes inside fences                  |
 | `npm run check:worker`    | the deploy config, by running the real `workerd` runtime against `dist/`                                                          |
 
 These exist because the failures that matter here are all **silent**. A renamed
@@ -167,8 +167,22 @@ downgrade of the SEO signal on those links.
 ## Implementation notes
 
 - **Zero client-side JavaScript by default.** The only scripts are the navbar
-  burger, the click-to-load Disqus embed, and keyboard navigation on photo
-  pages. All are small enough that Astro inlines them; no JS bundle is emitted.
+  burger, the dark-mode toggle, and keyboard navigation on photo pages. All are small enough that Astro inlines them; no
+  JS bundle is emitted.
+- **Styling is Tailwind 4**, installed as a Vite plugin (`@tailwindcss/vite`) —
+  the `@astrojs/tailwind` integration only supports Tailwind 3 and Astro ≤5.
+  Configuration is CSS-first in `src/styles/global.css`; there is no
+  `tailwind.config.js`, and one would not be read unless referenced with
+  `@config`.
+- **Colours are semantic tokens**, not `dark:` variants. `@theme` defines
+  `--color-page`, `--color-ink`, `--color-surface` and so on, and the `.dark`
+  block re-points them. That means `bg-surface` flips automatically and the
+  markup stays free of paired light/dark classes. The light values were measured
+  from the Bulma build so the light theme matches the old site.
+- **`@apply` inside an `.astro` `<style>` block requires `@reference`** at the
+  top of that block, otherwise the build fails. Prefer utilities in markup; the
+  few genuinely custom rules here (the photo viewer's arrow glyphs, the home
+  page's `-webkit-text-stroke`) are plain CSS with no `@apply`.
 - **Images** go through `astro:assets`, replacing `gatsby-plugin-image` and
   `gatsby-plugin-sharp`. ~870 photos become ~2,760 derivatives. The first build
   takes ~25s; later builds reuse the cache and take ~3s.

@@ -6,82 +6,172 @@ const section = "/" + Astro.url.pathname.split("/")[1];
 const isActive = (url: string) => (url.replace(/\/$/, "") || "/") === section;
 ---
 
-<nav class="navbar is-black is-fixed-top">
-  <div class="container">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/">
-        <img src="/logo.svg" alt="logo" height="28" />
-        <b>{site.title}</b>
-      </a>
-      <span
-        class="navbar-burger burger"
-        role="button"
-        tabindex="0"
-        aria-label="menu"
-        aria-expanded="false"
-        data-burger
+<nav
+  id="site-nav"
+  class="bg-navbar fixed inset-x-0 top-0 z-50 text-white backdrop-blur-md backdrop-saturate-150 transition-[background-color,box-shadow] duration-200"
+  aria-label="Main navigation"
+>
+  <div class="max-w-bulma mx-auto w-full px-6">
+    <div class="flex h-navbar items-center justify-between">
+      <a
+        href="/"
+        class="flex items-center gap-4 whitespace-nowrap font-bold text-white"
       >
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </span>
-    </div>
-    <div class="navbar-menu" data-menu>
-      <div class="navbar-end">
-        {
-          nav.map((item) => (
-            <a
-              class:list={["navbar-item", { "is-active": isActive(item.url) }]}
-              href={item.url}
-            >
-              {item.title}
-            </a>
-          ))
-        }
+        <img src="/logo.svg" alt="logo" height="28" class="h-7 w-auto" />
+        {site.title}
+      </a>
+
+      <div class="flex items-center gap-2">
+        <div
+          id="nav-menu"
+          class="top-navbar absolute inset-x-0 border-t border-white/10 px-6 pb-4 max-md:bg-navbar md:static md:flex md:flex-row md:items-center md:border-0 md:p-0"
+        >
+          {
+            nav.map((item) => (
+              <a
+                href={item.url}
+                aria-current={isActive(item.url) ? "page" : undefined}
+                class:list={[
+                  "rounded px-3 py-2 transition-colors hover:bg-white/10",
+                  isActive(item.url) ? "text-white" : "text-white/70",
+                ]}
+              >
+                {item.title}
+              </a>
+            ))
+          }
+        </div>
+
+        <button
+          id="theme-toggle"
+          type="button"
+          class="cursor-pointer rounded p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          aria-label="Toggle dark mode"
+        >
+          {/* Sun shows in dark mode, moon in light mode. */}
+          <svg
+            class="hidden h-5 w-5 dark:block"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+              d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+            ></path>
+          </svg>
+          <svg
+            class="h-5 w-5 dark:hidden"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+        </button>
+
+        <button
+          id="nav-burger"
+          type="button"
+          class="cursor-pointer rounded p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white md:hidden"
+          aria-label="Menu"
+          aria-expanded="false"
+          aria-controls="nav-menu"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M3 6h18M3 12h18M3 18h18"></path>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
 </nav>
 
 <style>
-  /* Replaces the `&emsp;` that used to separate the logo from the site name;
-     Astro's JSX-style whitespace collapsing would eat plain spaces here. */
-  .navbar-brand .navbar-item img {
-    margin-right: 1em;
+  /*
+   * The blur is applied with Tailwind's backdrop-* utilities in the markup,
+   * not here: a hand-written `backdrop-filter` plus its `-webkit-` twin gets
+   * collapsed to one declaration by the CSS minifier, silently dropping one.
+   *
+   * It is also always on rather than toggled, which avoids transitioning
+   * backdrop-filter from `none` — browsers interpolate that unreliably. While
+   * the bar is opaque the blur has nothing to show through it anyway.
+   */
+
+  /* Once scrolled, the bar goes translucent so content blurs beneath it. */
+  #site-nav.is-scrolled {
+    background-color: color-mix(in srgb, var(--color-navbar) 72%, transparent);
+    box-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
   }
 
-  /* .navbar-item is a flex container, so the title shrinks and wraps unless
-     told otherwise. */
-  .navbar-brand .navbar-item b {
-    white-space: nowrap;
+  /*
+   * Below md the menu is a dropdown panel: hidden until the burger opens it,
+   * then a column so each link gets its own line. Above md the `md:flex`
+   * utility takes over and it is a static row that is always visible.
+   *
+   * Display is handled here rather than by toggling Tailwind's `hidden`,
+   * because removing that class falls back to `display: block` — the links
+   * would then flow inline instead of stacking.
+   */
+  @media (width < 48rem) {
+    #nav-menu {
+      display: none;
+    }
+
+    #nav-menu.is-open {
+      display: flex;
+      flex-direction: column;
+    }
   }
 </style>
 
 <script>
-  const burger = document.querySelector<HTMLElement>("[data-burger]");
-  const menu = document.querySelector<HTMLElement>("[data-menu]");
+  const burger = document.getElementById("nav-burger");
+  const menu = document.getElementById("nav-menu");
+  const bar = document.getElementById("site-nav");
 
-  if (burger && menu) {
-    const setOpen = (open: boolean) => {
-      burger.classList.toggle("is-active", open);
-      menu.classList.toggle("is-active", open);
-      burger.setAttribute("aria-expanded", String(open));
-    };
+  const setMenuOpen = (open: boolean) => {
+    menu?.classList.toggle("is-open", open);
+    burger?.setAttribute("aria-expanded", String(open));
+  };
 
-    burger.addEventListener("click", () =>
-      setOpen(!burger.classList.contains("is-active")),
-    );
+  // Blur the bar only once the page has actually moved under it.
+  const onScroll = () => {
+    bar?.classList.toggle("is-scrolled", window.scrollY > 8);
+  };
 
-    burger.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        setOpen(!burger.classList.contains("is-active"));
-      }
-    });
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
 
-    // Bulma switches the navbar to its desktop layout at 1024px.
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 1023) setOpen(false);
-    });
-  }
+  burger?.addEventListener("click", () => {
+    setMenuOpen(!menu?.classList.contains("is-open"));
+  });
+
+  // Above Tailwind's md breakpoint the menu is a static row, so any open
+  // dropdown state is stale.
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 768) setMenuOpen(false);
+  });
+
+  const toggle = document.getElementById("theme-toggle");
+
+  toggle?.addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    localStorage.theme = dark ? "dark" : "light";
+  });
 </script>

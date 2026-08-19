@@ -1,0 +1,55 @@
+---
+import { categoryHref } from "../lib/categories";
+
+interface Props {
+  href: string;
+  title: string;
+  excerpt: string;
+  date: Date;
+  category: string;
+  section: "blog" | "photography";
+}
+
+const { href, title, excerpt, date, category, section } = Astro.props;
+
+const dateFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<article
+  class="bg-surface shadow-card flex flex-col overflow-hidden rounded-xl transition-transform hover:-translate-y-0.5"
+>
+  {
+    Astro.slots.has("image") && (
+      <a href={href} class="block">
+        <slot name="image" />
+      </a>
+    )
+  }
+
+  <div class="flex-1 p-6">
+    <h3 class="text-2xl">
+      <a href={href} class="text-link hover:underline">{title}</a>
+    </h3>
+    <p class="mt-4">{excerpt}</p>
+  </div>
+
+  <footer
+    class="border-line divide-line text-ink-muted flex divide-x border-t text-sm"
+  >
+    <div class="flex-1 p-3 text-center">
+      <time datetime={date.toISOString()}>{dateFormat.format(date)}</time>
+    </div>
+    <div class="flex-1 p-3 text-center">
+      <a
+        href={categoryHref(section, category)}
+        class="hover:text-link hover:underline"
+      >
+        {category}
+      </a>
+    </div>
+  </footer>
+</article>

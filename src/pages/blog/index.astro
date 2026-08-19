@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
+import EntryCard from "../../components/EntryCard.astro";
 import { excerpt } from "../../lib/excerpt";
 
 const contentTitle = "Blog";
@@ -10,12 +11,6 @@ const contentTitle = "Blog";
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-
-const dateFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "2-digit",
-  month: "long",
-  year: "numeric",
-});
 ---
 
 <BaseLayout
@@ -25,44 +20,20 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 >
   <Header title={contentTitle} subtitle="Techie 'n' nerdy stuff" />
 
-  <div class="container section">
-    <div class="columns is-multiline is-centered">
+  <div class="max-w-bulma mx-auto w-full px-6 py-12">
+    <div class="mx-auto flex max-w-3xl flex-col gap-6">
       {
         posts.map((post) => (
-          <div class="column is-7">
-            <div class="card entry-card">
-              <div class="card-content entry-card-content">
-                <h3 class="is-size-4">
-                  <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                </h3>
-                <br />
-                <div class="content">
-                  <p>{excerpt(post.body ?? "")}</p>
-                </div>
-              </div>
-
-              <footer class="card-footer">
-                <div class="card-footer-item">
-                  {dateFormat.format(post.data.date)}
-                </div>
-                <div class="card-footer-item">{post.data.category}</div>
-              </footer>
-            </div>
-          </div>
+          <EntryCard
+            href={`/blog/${post.id}/`}
+            title={post.data.title}
+            excerpt={excerpt(post.body ?? "")}
+            date={post.data.date}
+            category={post.data.category}
+            section="blog"
+          />
         ))
       }
     </div>
   </div>
 </BaseLayout>
-
-<style>
-  .entry-card {
-    display: flex;
-    min-height: 100%;
-    flex-direction: column;
-  }
-
-  .entry-card-content {
-    flex: 1;
-  }
-</style>

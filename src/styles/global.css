@@ -1,24 +1,171 @@
-/* Long words and code blocks used to be handled by a styled-components
-   wrapper in blogElementTemplate; it belongs with the prose styles. */
-.content {
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Dark mode is driven by a class on <html>, toggled by the navbar button and
+   set before paint by the inline script in BaseLayout. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Semantic colour tokens. Light values are the ones measured from Bulma 1.0.4
+ * before the migration, so the light theme is a close match to the old site.
+ * Utilities compile to var(--color-*), which lets the .dark block below
+ * re-point them without needing a dark: variant on every element.
+ */
+@theme {
+  --font-sans:
+    Inter, "SF Pro", "Segoe UI", Roboto, Oxygen, Ubuntu, "Helvetica Neue",
+    Helvetica, Arial, sans-serif;
+
+  --color-page: #ffffff;
+  --color-ink: rgb(64 70 84);
+  --color-ink-strong: rgb(46 51 61);
+  --color-ink-muted: rgb(107 114 128);
+  --color-link: rgb(41 66 255);
+  --color-navbar: rgb(9 10 12);
+  --color-hero: rgb(46 51 61);
+  --color-hero-ink: rgb(243 244 246);
+  --color-surface: #ffffff;
+  --color-surface-muted: rgb(249 250 251);
+  --color-chip: rgb(243 244 246);
+  --color-line: rgb(235 236 240);
+
+  /* Bulma's $navbar-height. */
+  --spacing-navbar: 3.25rem;
+
+  /* Bulma's container widths at its own breakpoints. */
+  --container-bulma: 72rem;
+
+  --shadow-card:
+    0 8px 16px -2px rgb(9 10 12 / 0.1), 0 0 0 1px rgb(9 10 12 / 0.02);
+}
+
+/*
+ * Dark palette, built as an elevation scale so each surface is distinguishable
+ * rather than five near-identical greys. Darkest to lightest:
+ *
+ *   navbar  #05070b   chrome, recedes furthest
+ *   footer  #0a0e15   sits behind the page content
+ *   page    #10151d   the base the content scrolls on
+ *   card    #1b2230   lifted off the page
+ *   hero    #273143   the banner, clearly the lightest block
+ */
+.dark {
+  --color-page: #10151d;
+  --color-ink: #c2cbd8;
+  --color-ink-strong: #f2f6fb;
+  --color-ink-muted: #8a94a6;
+  --color-link: #7fa9ff;
+  --color-navbar: #05070b;
+  --color-hero: #273143;
+  --color-hero-ink: #f2f6fb;
+  --color-surface: #1b2230;
+  --color-surface-muted: #0a0e15;
+  --color-chip: #2a3446;
+  --color-line: #333e52;
+
+  --shadow-card:
+    0 8px 16px -2px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+/*
+ * The viewport below the fixed navbar. The body is padded down by the navbar
+ * height, so anything that should fill exactly one screen has to subtract it —
+ * using 100svh directly overflows by that amount and leaves a gap.
+ */
+@utility min-h-viewport {
+  min-height: calc(100svh - var(--spacing-navbar));
+}
+
+/*
+ * Unlayered rules: these deliberately sit outside @layer so they win over the
+ * typography plugin's utilities without a specificity fight.
+ */
+
+html {
+  color-scheme: light;
+}
+
+.dark html,
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-page);
+  color: var(--color-ink);
+}
+
+/* Prose tuning. Replaces Bulma's `.content`, which styled rendered markdown. */
+.prose {
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-ink-strong);
+  --tw-prose-links: var(--color-link);
+  --tw-prose-bold: var(--color-ink-strong);
+  --tw-prose-counters: var(--color-ink-muted);
+  --tw-prose-bullets: var(--color-line);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-ink-strong);
+  --tw-prose-quote-borders: var(--color-line);
+  --tw-prose-captions: var(--color-ink-muted);
+  --tw-prose-code: var(--color-ink-strong);
+  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-td-borders: var(--color-line);
+}
+
+/* The typography plugin wraps inline <code> in literal backtick characters.
+   Bulma did not, and they read as typos in prose. */
+.prose :where(code):not(:where(.not-prose, .not-prose *))::before,
+.prose :where(code):not(:where(.not-prose, .not-prose *))::after {
+  content: none;
+}
+
+/* Give inline code the same chip treatment tags get, so it still stands out
+   once the backticks are gone. */
+.prose :where(code):not(:where(pre *, .not-prose, .not-prose *)) {
+  background-color: var(--color-chip);
+  border-radius: 0.25rem;
+  padding: 0.125em 0.375em;
+  font-weight: 500;
+}
+
+/* Bulma did not underline links; keep that. */
+.prose :where(a):not(:where(.not-prose, .not-prose *)) {
+  text-decoration: none;
+}
+
+.prose :where(a):not(:where(.not-prose, .not-prose *)):hover {
+  text-decoration: underline;
+}
+
+/* Long words and URLs used to be handled by a styled-components wrapper. */
+.prose {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
-.content pre {
-  overflow-x: auto;
-}
-
 /* Replaces gatsby-remark-responsive-iframe. */
-.content iframe {
+.prose :where(iframe):not(:where(.not-prose, .not-prose *)) {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 9;
   border: 0;
 }
 
-/* Markdown images are optimised by astro:assets; keep them inside the column. */
-.content img {
-  height: auto;
-  max-width: 100%;
+/*
+ * Shiki emits light colours inline and dark ones as custom properties. Swap
+ * them under .dark. The class is `.astro-code`, not `.shiki`.
+ */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+.astro-code {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
 }

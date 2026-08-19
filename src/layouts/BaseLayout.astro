@@ -1,5 +1,4 @@
 ---
-import "bulma/css/bulma.css";
 import "../styles/global.css";
 
 import Nav from "../components/Nav.astro";
@@ -31,10 +30,64 @@ const { title, description, image, type, bare = false } = Astro.props;
     <meta name="theme-color" content="red" />
     <Seo title={title} description={description} image={image} type={type} />
     <slot name="head" />
+
+    {/* Runs before paint so the page never flashes the wrong theme. */}
+    <script is:inline>
+      document.documentElement.classList.toggle(
+        "dark",
+        localStorage.theme === "dark" ||
+          (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches),
+      );
+    </script>
   </head>
-  <body class={bare ? undefined : "has-navbar-fixed-top"}>
+  <body class:list={["font-sans", !bare && "pt-navbar"]}>
     {!bare && <Nav />}
-    <slot />
+
+    {
+      bare ? (
+        <slot />
+      ) : (
+        /*
+         * The footer is fixed at the bottom of the viewport and this wrapper
+         * scrolls over it, so the footer is revealed as you reach the end.
+         * The wrapper needs its own background for that to read as a layer,
+         * and casts a shadow downward onto the footer.
+         */
+        <div class="bg-page text-ink page-content min-h-viewport relative z-10 shadow-[0_12px_24px_-6px_rgb(0_0_0/0.28)]">
+          <slot />
+        </div>
+      )
+    }
+
     {!bare && <Footer />}
   </body>
 </html>
+
+<style>
+  .page-content {
+    /* Leaves exactly enough room to scroll the footer into view. Set from the
+       measured footer height so it stays correct when the footer wraps. */
+    margin-bottom: var(--footer-height, 12rem);
+  }
+</style>
+
+<script>
+  // The footer's height varies with viewport width (its contents wrap), so the
+  // scroll runway underneath it is measured rather than hard-coded.
+  // Selected by id: entry cards also use <footer>, and a bare tag selector
+  // would match the first card instead of the site footer.
+  const footer = document.getElementById("site-footer");
+
+  if (footer) {
+    const setFooterHeight = () => {
+      document.documentElement.style.setProperty(
+        "--footer-height",
+        `${footer.offsetHeight}px`,
+      );
+    };
+
+    setFooterHeight();
+    new ResizeObserver(setFooterHeight).observe(footer);
+  }
+</script>

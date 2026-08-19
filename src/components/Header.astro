@@ -1,17 +1,48 @@
 ---
+import { categoryHref } from "../lib/categories";
+
 interface Props {
   title: string;
-  subtitle: string;
+  /** Plain subtitle, for pages with no category (About, 404, listings). */
+  subtitle?: string;
+  /** Article metadata; renders the date with the category as a link. */
+  meta?: {
+    date: Date;
+    category: string;
+    section: "blog" | "photography";
+  };
 }
 
-const { title, subtitle } = Astro.props;
+const { title, subtitle, meta } = Astro.props;
+
+const dateFormat = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "2-digit",
+  year: "numeric",
+});
 ---
 
-<header class="hero is-dark">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title">{title}</h1>
-      <h2 class="subtitle">{subtitle}</h2>
-    </div>
+<header class="bg-hero text-hero-ink">
+  <div class="max-w-bulma mx-auto w-full px-6 py-12">
+    <h1 class="text-[2rem] leading-tight font-extrabold">{title}</h1>
+
+    {
+      meta ? (
+        <p class="text-xl">
+          <time datetime={meta.date.toISOString()}>
+            {dateFormat.format(meta.date)}
+          </time>
+          {" - "}
+          <a
+            href={categoryHref(meta.section, meta.category)}
+            class="underline decoration-current/40 underline-offset-4 transition-colors hover:decoration-current"
+          >
+            {meta.category}
+          </a>
+        </p>
+      ) : (
+        <h2 class="text-xl">{subtitle}</h2>
+      )
+    }
   </div>
 </header>

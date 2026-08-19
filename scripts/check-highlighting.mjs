@@ -21,7 +21,18 @@ const ALLOWED_PLAINTEXT = {
 
 const PRE_RE =
   /<pre class="astro-code[^"]*"[^>]*data-language="([^"]+)"[^>]*>([\s\S]*?)<\/pre>/g;
-const COLOUR_RE = /style="color:#[0-9A-Fa-f]{3,8}"/g;
+
+/**
+ * With a Shiki theme pair, a token carries the light colour inline and the
+ * dark one as a custom property:
+ *
+ *   <span style="color:#D73A49;--shiki-dark:#F97583">
+ *
+ * Both halves are checked, because losing the dark value would silently leave
+ * code blocks unreadable in dark mode while still looking fine in light.
+ */
+const COLOUR_RE = /style="[^"]*\bcolor:#[0-9A-Fa-f]{3,8}/g;
+const DARK_COLOUR_RE = /--shiki-dark:#[0-9A-Fa-f]{3,8}/g;
 
 const dist = "dist/blog";
 if (!existsSync(dist)) {
@@ -56,6 +67,15 @@ for (const slug of readdirSync(dist).sort()) {
     if (colours === 0) {
       console.error(
         `FAIL ${slug} block ${index + 1}: data-language="${language}" but no coloured tokens — grammar probably not bundled.`,
+      );
+      failures += 1;
+      continue;
+    }
+
+    const darkColours = (body.match(DARK_COLOUR_RE) ?? []).length;
+    if (darkColours === 0) {
+      console.error(
+        `FAIL ${slug} block ${index + 1}: light colours present but no --shiki-dark values — code would be unreadable in dark mode.`,
       );
       failures += 1;
     }

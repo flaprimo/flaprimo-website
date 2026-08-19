@@ -1,0 +1,55 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection } from "astro:content";
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Header from "../../../components/Header.astro";
+import EntryCard from "../../../components/EntryCard.astro";
+import { excerpt } from "../../../lib/excerpt";
+import { groupByCategory } from "../../../lib/categories";
+
+export const getStaticPaths = async () => {
+  const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  return [...groupByCategory(posts)].map(([slug, group]) => ({
+    params: { category: slug },
+    props: { name: group.name, posts: group.entries },
+  }));
+};
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { name, posts } = Astro.props as Props;
+const count = `${posts.length} post${posts.length === 1 ? "" : "s"}`;
+---
+
+<BaseLayout
+  title={name}
+  description={`Posts about ${name} on Flavio's blog.`}
+  type="website"
+>
+  <Header title={name} subtitle={count} />
+
+  <div class="max-w-bulma mx-auto w-full px-6 py-12">
+    <div class="mx-auto flex max-w-3xl flex-col gap-6">
+      {
+        posts.map((post) => (
+          <EntryCard
+            href={`/blog/${post.id}/`}
+            title={post.data.title}
+            excerpt={excerpt(post.body ?? "")}
+            date={post.data.date}
+            category={post.data.category}
+            section="blog"
+          />
+        ))
+      }
+
+      <p class="text-ink-muted mt-4 text-center">
+        <a href="/blog/" class="text-link hover:underline">← All posts</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

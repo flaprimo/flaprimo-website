@@ -7,7 +7,7 @@ const contentTitle = "Cookie Policy";
 
 <BaseLayout
   title={contentTitle}
-  description="Cookie policy for Flavio's website"
+  description="This site sets no cookies and collects nothing about you."
   type="website"
 >
   <Header
@@ -15,31 +15,40 @@ const contentTitle = "Cookie Policy";
     subtitle="Come to the dark side, we have cookies!"
   />
 
-  <div class="container section">
-    <div class="columns is-centered">
-      <div class="content column is-7">
-        <p>
-          This site uses cookies - small text files that are placed on your
-          machine to help the site provide a better user experience.
-        </p>
-        <p>
-          In general, cookies are used to retain user preferences, store
-          information for things like shopping carts, and provide anonymised
-          tracking data to third party applications like Google Analytics.
-        </p>
-        <p>
-          As a rule, cookies will make your browsing experience better. However,
-          you may prefer to disable cookies on this site and on others. The most
-          effective way to do this is to disable cookies in your browser.
-        </p>
-        <p>
-          We suggest consulting the Help section of your browser or taking a
-          look at <a href="http://www.aboutcookies.org"
-            >the About Cookies website</a
-          >
-          which offers guidance for all modern browsers
-        </p>
-      </div>
+  <div class="max-w-bulma mx-auto w-full px-6 py-12">
+    <div class="prose mx-auto">
+      <p>
+        Actually, we don&#39;t. <b>This site sets no cookies at all</b>, runs no
+        analytics, and has no third-party embeds, trackers or advertising. There
+        is nothing to opt into and nothing to opt out of.
+      </p>
+      <p>
+        The one thing stored on your device is a single
+        <code>localStorage</code> entry named <code>theme</code>, which
+        remembers whether you chose the light or dark colour scheme. It never
+        leaves your browser, it is not a cookie, and it is not sent with any
+        request. If you never touch the theme toggle, even that is not written —
+        the site simply follows your operating system preference.
+      </p>
+      <p>
+        The site is a set of static files with no server-side logic and no
+        database. Clearing your browser data for this domain removes the theme
+        preference and returns everything to its default.
+      </p>
+      <p>
+        Pages are served by Cloudflare, which processes request metadata such as
+        IP addresses in order to deliver them, as described in the <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.cloudflare.com/privacypolicy/"
+          >Cloudflare privacy policy</a
+        >.
+      </p>
+      <p>
+        Links to external sites — GitHub, LinkedIn, Mastodon and the rest — are
+        plain links. Those sites have their own policies, which apply once you
+        follow them.
+      </p>
     </div>
   </div>
 </BaseLayout>

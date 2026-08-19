@@ -1,0 +1,67 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Header from "../../../components/Header.astro";
+import EntryCard from "../../../components/EntryCard.astro";
+import { excerpt } from "../../../lib/excerpt";
+import { groupByCategory } from "../../../lib/categories";
+
+export const getStaticPaths = async () => {
+  const galleries = (await getCollection("photography")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  return [...groupByCategory(galleries)].map(([slug, group]) => ({
+    params: { category: slug },
+    props: { name: group.name, galleries: group.entries },
+  }));
+};
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { name, galleries } = Astro.props as Props;
+const count = `${galleries.length} ${galleries.length === 1 ? "gallery" : "galleries"}`;
+---
+
+<BaseLayout
+  title={name}
+  description={`Photo galleries in ${name}.`}
+  type="website"
+>
+  <Header title={name} subtitle={count} />
+
+  <div class="max-w-bulma mx-auto w-full px-6 py-12">
+    <div class="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+      {
+        galleries.map((gallery) => (
+          <EntryCard
+            href={`/photography/${gallery.id}/`}
+            title={gallery.data.title}
+            excerpt={excerpt(gallery.body ?? "")}
+            date={gallery.data.date}
+            category={gallery.data.category}
+            section="photography"
+          >
+            <Image
+              slot="image"
+              src={gallery.data.cover}
+              alt={`${gallery.data.title} cover image`}
+              width={900}
+              quality={85}
+              class="w-full"
+            />
+          </EntryCard>
+        ))
+      }
+    </div>
+
+    <p class="text-ink-muted mt-8 text-center">
+      <a href="/photography/" class="text-link hover:underline"
+        >← All galleries</a
+      >
+    </p>
+  </div>
+</BaseLayout>

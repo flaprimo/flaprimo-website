@@ -1,13 +1,24 @@
 ---
 import SocialButtons from "./SocialButtons.astro";
+
+const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-  <div class="container level">
-    <div class="level-left">
-      <SocialButtons />
-    </div>
+{/* Fixed, so the page content scrolls over it and reveals it at the end. */}
+<footer
+  id="site-footer"
+  class="bg-surface-muted fixed inset-x-0 bottom-0 z-0 px-6 py-12"
+>
+  <div
+    class="max-w-bulma mx-auto flex w-full flex-wrap items-center justify-between gap-6"
+  >
+    <SocialButtons />
 
-    <a class="level-right" href="/cookie-policy/">Cookie Policy</a>
+    <div class="text-ink-muted flex items-center gap-6 text-sm">
+      <span>© {year} Flavio Primo</span>
+      <a href="/cookie-policy/" class="hover:text-link hover:underline">
+        Cookie Policy
+      </a>
+    </div>
   </div>
 </footer>

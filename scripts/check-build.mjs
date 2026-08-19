@@ -45,14 +45,38 @@ const expected = new Set(["/"]);
 for (const p of ["about", "cookie-policy", "blog", "photography"]) {
   expected.add(`/${p}/`);
 }
+
+/** Mirrors categorySlug() in src/lib/categories.ts. */
+const slugify = (s) =>
+  s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const categoryOf = (file) =>
+  readFileSync(file, "utf8")
+    .match(/^category:\s*"?([^"\n]+)"?/m)?.[1]
+    .trim();
+
 for (const slug of readdirSync(`${CONTENT}/blog`)) {
-  if (existsSync(`${CONTENT}/blog/${slug}/index.md`))
-    expected.add(`/blog/${slug}/`);
+  const md = `${CONTENT}/blog/${slug}/index.md`;
+  if (!existsSync(md)) continue;
+  expected.add(`/blog/${slug}/`);
+
+  const category = categoryOf(md);
+  if (category) expected.add(`/blog/category/${slugify(category)}/`);
 }
 for (const gallery of readdirSync(`${CONTENT}/photography`)) {
   const dir = `${CONTENT}/photography/${gallery}`;
-  if (!existsSync(`${dir}/index.md`)) continue;
+  const md = `${dir}/index.md`;
+  if (!existsSync(md)) continue;
   expected.add(`/photography/${gallery}/`);
+
+  const category = categoryOf(md);
+  if (category) expected.add(`/photography/category/${slugify(category)}/`);
+
   for (const file of readdirSync(dir)) {
     if (file.endsWith(".jpg")) {
       expected.add(`/photography/${gallery}/${file.replace(/\.jpg$/, "")}/`);
@@ -197,7 +221,10 @@ if (!existsSync(sitemapFile)) {
     ),
   );
 
-  const isPhotoPage = (route) => /^\/photography\/[^/]+\/[^/]+\/$/.test(route);
+  // Must match the sitemap filter in astro.config.mjs, including the lookahead
+  // that keeps /photography/category/<name>/ out of the photo-page shape.
+  const isPhotoPage = (route) =>
+    /^\/photography\/(?!category\/)[^/]+\/[^/]+\/$/.test(route);
 
   for (const route of listed) {
     if (isPhotoPage(route)) fail(`photo page leaked into sitemap: ${route}`);

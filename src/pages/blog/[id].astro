@@ -6,7 +6,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import Tags from "../../components/Tags.astro";
 import NextPrevElements from "../../components/NextPrevElements.astro";
-import Comments from "../../components/Comments.astro";
 import { excerpt } from "../../lib/excerpt";
 
 export const getStaticPaths = async () => {
@@ -30,12 +29,6 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { post, previous, next } = Astro.props as Props;
 const { Content } = await render(post);
-
-const date = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "2-digit",
-  year: "numeric",
-}).format(post.data.date);
 ---
 
 <BaseLayout
@@ -45,34 +38,30 @@ const date = new Intl.DateTimeFormat("en-US", {
 >
   <Header
     title={post.data.title}
-    subtitle={`${date} - ${post.data.category}`}
+    meta={{
+      date: post.data.date,
+      category: post.data.category,
+      section: "blog",
+    }}
   />
 
-  <div class="container section article-section">
-    <div class="columns is-centered">
-      <div class="column is-7">
-        <div class="content">
-          <Content />
-        </div>
+  <div class="max-w-bulma mx-auto w-full px-6 py-12">
+    <div class="mx-auto max-w-3xl">
+      <article class="prose max-w-none">
+        <Content />
+      </article>
 
+      <div class="mt-8">
         <Tags tags={post.data.tags} />
-
-        <NextPrevElements
-          previous={previous && {
-            href: `/blog/${previous.id}/`,
-            title: previous.data.title,
-          }}
-          next={next && { href: `/blog/${next.id}/`, title: next.data.title }}
-        />
-
-        <Comments title={post.data.title} type="blog" />
       </div>
+
+      <NextPrevElements
+        previous={previous && {
+          href: `/blog/${previous.id}/`,
+          title: previous.data.title,
+        }}
+        next={next && { href: `/blog/${next.id}/`, title: next.data.title }}
+      />
     </div>
   </div>
 </BaseLayout>
-
-<style>
-  .article-section {
-    background-color: rgba(255, 255, 255, 0.9);
-  }
-</style>

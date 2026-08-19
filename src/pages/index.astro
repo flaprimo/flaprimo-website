@@ -3,36 +3,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout type="website">
-  <div class="hero is-medium is-fullheight-with-navbar index-hero">
-    <div class="hero-body"></div>
-    <div class="hero-foot">
-      <div class="container index-hero-text">
-        <h1 class="title has-text-white has-text-weight-bold">FLAVIO PRIMO</h1>
-        <h2 class="subtitle has-text-white">Just another dev blog_</h2>
-      </div>
+  <div
+    class="min-h-viewport flex h-full flex-col justify-end bg-white bg-cover bg-center"
+    style="background-image: url('/bg_index.svg')"
+  >
+    <div class="max-w-bulma index-hero-text mx-auto w-full px-6 pb-5">
+      <h1 class="text-[6em] leading-none font-bold text-white">FLAVIO PRIMO</h1>
+      <h2 class="text-[4em] leading-tight text-white">
+        Just another dev blog_
+      </h2>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .index-hero {
-    background-image: url("/bg_index.svg");
-    background-position: center center;
-    background-size: cover;
-    background-color: white;
-  }
-
+  /* Kept as plain CSS: -webkit-text-stroke has no Tailwind utility. */
   .index-hero-text {
-    padding-bottom: 20px;
     text-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
     -webkit-text-stroke: 1px black;
-  }
-
-  .index-hero-text .title {
-    font-size: 6em;
-  }
-
-  .index-hero-text .subtitle {
-    font-size: 4em;
   }
 </style>

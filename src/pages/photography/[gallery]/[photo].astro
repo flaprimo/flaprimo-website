@@ -48,85 +48,58 @@ const preload = await Promise.all(
     {preload.map((image) => <link rel="preload" as="image" href={image.src} />)}
   </Fragment>
 
-  <div class="hero has-background-black is-fullheight">
-    <div class="hero-body photo-body">
-      <div class="photo-stage">
-        <Image
-          src={photo.image}
-          alt={`${galleryTitle} — ${photo.name}`}
-          width={1000}
-          layout="none"
-          priority
-        />
+  <div class="flex min-h-svh flex-col bg-black">
+    <div class="photo-stage flex h-[90svh] items-center justify-center">
+      <Image
+        src={photo.image}
+        alt={`${galleryTitle} — ${photo.name}`}
+        width={1000}
+        layout="none"
+        priority
+      />
+    </div>
+
+    <nav class="flex h-[10svh] items-center justify-between px-4">
+      <div class="flex">
+        {
+          previous && (
+            <a
+              href={photoHref(previous)}
+              class="photo-button rounded-l-md"
+              aria-label="Previous photo"
+            >
+              <i class="arrow-icon left-arrow" />
+            </a>
+          )
+        }
+        {
+          next && (
+            <a
+              href={photoHref(next)}
+              class:list={[
+                "photo-button rounded-r-md",
+                !previous && "rounded-l-md",
+              ]}
+              aria-label="Next photo"
+            >
+              <i class="arrow-icon right-arrow" />
+            </a>
+          )
+        }
       </div>
 
-      <nav class="level is-mobile photo-nav">
-        <div class="level-left">
-          <div class="field has-addons">
-            {
-              previous && (
-                <p class="control">
-                  <a
-                    href={photoHref(previous)}
-                    class="button is-dark"
-                    aria-label="Previous photo"
-                  >
-                    <span class="icon is-small">
-                      <i class="arrow-icon left-arrow" />
-                    </span>
-                  </a>
-                </p>
-              )
-            }
-            {
-              next && (
-                <p class="control">
-                  <a
-                    href={photoHref(next)}
-                    class="button is-dark"
-                    aria-label="Next photo"
-                  >
-                    <span class="icon is-small">
-                      <i class="arrow-icon right-arrow" />
-                    </span>
-                  </a>
-                </p>
-              )
-            }
-          </div>
-        </div>
-        <div class="level-right">
-          <p class="control">
-            <a
-              href={galleryHref}
-              class="button is-dark close-button"
-              aria-label="Back to gallery"
-            >
-              <span class="icon is-small is-rounded">
-                <i class="close-icon"></i>
-              </span>
-            </a>
-          </p>
-        </div>
-      </nav>
-    </div>
+      <a
+        href={galleryHref}
+        class="photo-button rounded-md"
+        aria-label="Back to gallery"
+      >
+        <i class="close-icon"></i>
+      </a>
+    </nav>
   </div>
 </BaseLayout>
 
 <style>
-  .photo-body {
-    padding: 0;
-    align-items: normal;
-    flex-direction: column;
-  }
-
-  .photo-stage {
-    height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .photo-stage :global(img) {
     width: auto;
     height: auto;
@@ -134,35 +107,42 @@ const preload = await Promise.all(
     max-height: 100%;
   }
 
-  .photo-nav {
-    height: 10vh;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  /* A dark pill button. Kept as CSS because the arrow and close glyphs are
+     drawn with borders and pseudo-elements rather than an icon font. */
+  .photo-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #363636;
+    transition: background-color 0.2s ease;
   }
 
-  .close-button {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+  .photo-button:hover {
+    background: #4a4a4a;
   }
 
   /* Formerly styled-components in photoElementTemplate.js */
   .arrow-icon {
     border: solid #f5f5f5;
-    padding: 5px;
+    padding: 4px;
     transform: rotate(45deg);
   }
 
   .arrow-icon.left-arrow {
     border-width: 0 0 2px 2px;
+    margin-left: 3px;
   }
 
   .arrow-icon.right-arrow {
     border-width: 2px 2px 0 0;
+    margin-right: 3px;
   }
 
   .close-icon {
-    width: 80%;
-    height: 80%;
+    width: 14px;
+    height: 14px;
     position: relative;
   }
 
@@ -170,6 +150,7 @@ const preload = await Promise.all(
   .close-icon::after {
     content: "";
     position: absolute;
+    left: 50%;
     background: #f5f5f5;
     width: 2px;
     height: 100%;
