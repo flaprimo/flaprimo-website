@@ -1,0 +1,19 @@
+# Cloudflare Pages response headers.
+# Without this, Pages defaults to `max-age=0, must-revalidate` on everything,
+# so all 2,700+ build assets revalidate on every visit.
+
+# Astro content-hashes everything in /_astro/, so the filename changes whenever
+# the bytes do. Safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Assets served verbatim from public/ keep their filenames across deploys, so
+# they get a modest TTL rather than an immutable one.
+/logo.svg
+  Cache-Control: public, max-age=86400
+/bg_index.svg
+  Cache-Control: public, max-age=86400
+/bg_seo.png
+  Cache-Control: public, max-age=86400
+/manifest.webmanifest
+  Cache-Control: public, max-age=86400

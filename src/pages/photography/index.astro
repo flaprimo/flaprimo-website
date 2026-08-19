@@ -1,0 +1,85 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import { excerpt } from "../../lib/excerpt";
+
+const contentTitle = "Photography";
+
+const galleries = (await getCollection("photography")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const dateFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<BaseLayout
+  title={contentTitle}
+  description="Flavio's photography gallery, photos from the wonderful places I've been."
+  type="website"
+>
+  <Header title={contentTitle} subtitle="My point of view" />
+
+  <div class="container section">
+    <div class="columns is-centered">
+      <div class="column is-9">
+        <div class="columns is-multiline is-centered">
+          {
+            galleries.map((gallery) => (
+              <div class="column is-half">
+                <div class="card entry-card">
+                  <div class="card-image">
+                    <Image
+                      src={gallery.data.cover}
+                      alt={`${gallery.data.title} cover image`}
+                      width={900}
+                      quality={85}
+                      class="image"
+                    />
+                  </div>
+
+                  <div class="card-content entry-card-content">
+                    <h3 class="is-size-4">
+                      <a href={`/photography/${gallery.id}/`}>
+                        {gallery.data.title}
+                      </a>
+                    </h3>
+                    <br />
+                    <div class="content">
+                      <p>{excerpt(gallery.body ?? "")}</p>
+                    </div>
+                  </div>
+
+                  <footer class="card-footer">
+                    <div class="card-footer-item">
+                      {dateFormat.format(gallery.data.date)}
+                    </div>
+                    <div class="card-footer-item">{gallery.data.category}</div>
+                  </footer>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .entry-card {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+  }
+
+  .entry-card-content {
+    flex: 1;
+  }
+</style>

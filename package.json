@@ -1,61 +1,44 @@
 {
   "name": "flaprimo-website",
   "description": "Flavio Primo website",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Flavio Primo",
-  "dependencies": {
-    "bluebird": "^3.7.2",
-    "bulma": "^1.0.4",
-    "bulma-extensions": "^6.2.7",
-    "cheerio": "^1.1.2",
-    "disqus-react": "^1.1.7",
-    "gatsby": "^5.15.0",
-    "gatsby-plugin-catch-links": "^5.15.0",
-    "gatsby-plugin-image": "^3.15.0",
-    "gatsby-plugin-manifest": "^5.15.0",
-    "gatsby-plugin-nprogress": "^5.15.0",
-    "gatsby-plugin-offline": "^6.15.0",
-    "gatsby-plugin-postcss": "6.15.0",
-    "gatsby-plugin-purgecss": "^6.2.1",
-    "gatsby-plugin-sharp": "^5.15.0",
-    "gatsby-plugin-sitemap": "^6.15.0",
-    "gatsby-plugin-styled-components": "^6.15.0",
-    "gatsby-remark-copy-linked-files": "^6.15.0",
-    "gatsby-remark-images": "^7.15.0",
-    "gatsby-remark-prismjs": "^7.15.0",
-    "gatsby-remark-responsive-iframe": "^6.15.0",
-    "gatsby-remark-smartypants": "^6.15.0",
-    "gatsby-source-filesystem": "^5.15.0",
-    "gatsby-transformer-remark": "^6.15.0",
-    "gatsby-transformer-sharp": "^5.15.0",
-    "prismjs": "^1.30.0",
-    "styled-components": "^6.1.19",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0"
-  },
-  "keywords": [
-    "gatsby"
-  ],
   "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "astro"
+  ],
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
-    "clean": "gatsby clean",
-    "format": "prettier --write 'src/**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "./node_modules/.bin/eslint --ext .js,.jsx --ignore-pattern public ."
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:build": "node scripts/check-build.mjs",
+    "check:highlight": "node scripts/check-highlighting.mjs",
+    "check:worker": "bash scripts/check-worker.sh",
+    "deploy": "astro build && wrangler deploy",
+    "test": "npm run check && npm run build && npm run check:build && npm run check:highlight && npm run check:worker",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.3",
+    "bulma": "^1.0.4",
+    "simple-icons": "^16.28.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.22.5",
-    "eslint": "^8.44.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-react": "^7.32.0",
-    "gatsby-plugin-eslint": "^4.0.4",
+    "@astrojs/check": "^0.9.10",
     "prettier": "^3.7.4",
-    "react-social-icons": "^6.25.0"
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.124.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/flaprimo/flaprimo-website"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20260815.1": true
   }
 }

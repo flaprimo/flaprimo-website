@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+
+const contentTitle = "Page not found";
+---
+
+<BaseLayout
+  title={contentTitle}
+  description="Whoooooops! This page doesn't exist.. the sadness."
+  type="website"
+>
+  <Header title={contentTitle} subtitle="Page not found" />
+
+  <div class="container section">
+    <div class="columns is-centered">
+      <div class="content column is-7">
+        <p>You just hit a route that doesn&#39;t exist... the sadness.</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

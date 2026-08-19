@@ -1,0 +1,102 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection, render } from "astro:content";
+import { Image, getImage } from "astro:assets";
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Header from "../../../components/Header.astro";
+import Tags from "../../../components/Tags.astro";
+import NextPrevElements from "../../../components/NextPrevElements.astro";
+import { galleryPhotos, photoHref } from "../../../lib/photos";
+
+export const getStaticPaths = async () => {
+  const galleries = (await getCollection("photography")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  return galleries.map((entry, index) => ({
+    params: { gallery: entry.id },
+    props: {
+      entry,
+      previous: galleries[index + 1],
+      next: galleries[index - 1],
+    },
+  }));
+};
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { entry, previous, next } = Astro.props as Props;
+const { Content } = await render(entry);
+
+const photos = galleryPhotos(entry.id);
+
+// Gatsby fed the 1000px-wide cover to the social card; getImage() is the
+// astro:assets equivalent of childImageSharp.resize.
+const card = await getImage({
+  src: entry.data.cover,
+  width: 1000,
+  format: "jpg",
+});
+
+const date = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "2-digit",
+  year: "numeric",
+}).format(entry.data.date);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.title}
+  image={card.src}
+  type="article"
+>
+  <Header
+    title={entry.data.title}
+    subtitle={`${date} - ${entry.data.category}`}
+  />
+
+  <div class="container section gallery-section">
+    <div class="content">
+      <Content />
+    </div>
+
+    <div class="columns is-multiline is-centered">
+      {
+        photos.map((photo) => (
+          <a class="column is-narrow" href={photoHref(photo)}>
+            <Image
+              src={photo.image}
+              alt={`${entry.data.title} — ${photo.name}`}
+              width={300}
+              height={300}
+              quality={85}
+              layout="fixed"
+              fit="cover"
+            />
+          </a>
+        ))
+      }
+    </div>
+
+    <Tags tags={entry.data.tags} />
+
+    <NextPrevElements
+      previous={previous && {
+        href: `/photography/${previous.id}/`,
+        title: previous.data.title,
+      }}
+      next={next && {
+        href: `/photography/${next.id}/`,
+        title: next.data.title,
+      }}
+    />
+  </div>
+</BaseLayout>
+
+<style>
+  .gallery-section {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+</style>

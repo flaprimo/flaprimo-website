@@ -1,0 +1,87 @@
+---
+import { nav, site } from "../config";
+
+// Highlight the top-level section, e.g. /blog/some-post/ marks "Blog" active.
+const section = "/" + Astro.url.pathname.split("/")[1];
+const isActive = (url: string) => (url.replace(/\/$/, "") || "/") === section;
+---
+
+<nav class="navbar is-black is-fixed-top">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="/logo.svg" alt="logo" height="28" />
+        <b>{site.title}</b>
+      </a>
+      <span
+        class="navbar-burger burger"
+        role="button"
+        tabindex="0"
+        aria-label="menu"
+        aria-expanded="false"
+        data-burger
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </span>
+    </div>
+    <div class="navbar-menu" data-menu>
+      <div class="navbar-end">
+        {
+          nav.map((item) => (
+            <a
+              class:list={["navbar-item", { "is-active": isActive(item.url) }]}
+              href={item.url}
+            >
+              {item.title}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* Replaces the `&emsp;` that used to separate the logo from the site name;
+     Astro's JSX-style whitespace collapsing would eat plain spaces here. */
+  .navbar-brand .navbar-item img {
+    margin-right: 1em;
+  }
+
+  /* .navbar-item is a flex container, so the title shrinks and wraps unless
+     told otherwise. */
+  .navbar-brand .navbar-item b {
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  const burger = document.querySelector<HTMLElement>("[data-burger]");
+  const menu = document.querySelector<HTMLElement>("[data-menu]");
+
+  if (burger && menu) {
+    const setOpen = (open: boolean) => {
+      burger.classList.toggle("is-active", open);
+      menu.classList.toggle("is-active", open);
+      burger.setAttribute("aria-expanded", String(open));
+    };
+
+    burger.addEventListener("click", () =>
+      setOpen(!burger.classList.contains("is-active")),
+    );
+
+    burger.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        setOpen(!burger.classList.contains("is-active"));
+      }
+    });
+
+    // Bulma switches the navbar to its desktop layout at 1024px.
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 1023) setOpen(false);
+    });
+  }
+</script>

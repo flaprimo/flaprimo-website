@@ -1,0 +1,208 @@
+---
+import { getCollection } from "astro:content";
+import { Image, getImage } from "astro:assets";
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { allGalleries, photoHref, type Photo } from "../../../lib/photos";
+
+export const getStaticPaths = async () => {
+  const titles = new Map(
+    (await getCollection("photography")).map((g) => [g.id, g.data.title]),
+  );
+
+  return [...allGalleries().values()].flatMap((photos) =>
+    photos.map((photo, index) => ({
+      params: { gallery: photo.gallery, photo: photo.name },
+      props: {
+        photo,
+        // Gatsby put the raw URL path in the <title> here; the gallery's own
+        // title is what that was reaching for.
+        galleryTitle: titles.get(photo.gallery) ?? photo.gallery,
+        previous: photos[index - 1],
+        next: photos[index + 1],
+      },
+    })),
+  );
+};
+
+const { photo, galleryTitle, previous, next } = Astro.props as {
+  photo: Photo;
+  galleryTitle: string;
+  previous?: Photo;
+  next?: Photo;
+};
+
+const galleryHref = `/photography/${photo.gallery}/`;
+
+// Preload the neighbours so the arrows feel instant, as the Gatsby template did.
+const preload = await Promise.all(
+  [previous, next]
+    .filter((p): p is Photo => Boolean(p))
+    // Options must match the <Image> below, or the preload misses.
+    .map((p) => getImage({ src: p.image, width: 1000, layout: "none" })),
+);
+---
+
+<BaseLayout title={galleryTitle} type="article" bare>
+  <Fragment slot="head">
+    {preload.map((image) => <link rel="preload" as="image" href={image.src} />)}
+  </Fragment>
+
+  <div class="hero has-background-black is-fullheight">
+    <div class="hero-body photo-body">
+      <div class="photo-stage">
+        <Image
+          src={photo.image}
+          alt={`${galleryTitle} — ${photo.name}`}
+          width={1000}
+          layout="none"
+          priority
+        />
+      </div>
+
+      <nav class="level is-mobile photo-nav">
+        <div class="level-left">
+          <div class="field has-addons">
+            {
+              previous && (
+                <p class="control">
+                  <a
+                    href={photoHref(previous)}
+                    class="button is-dark"
+                    aria-label="Previous photo"
+                  >
+                    <span class="icon is-small">
+                      <i class="arrow-icon left-arrow" />
+                    </span>
+                  </a>
+                </p>
+              )
+            }
+            {
+              next && (
+                <p class="control">
+                  <a
+                    href={photoHref(next)}
+                    class="button is-dark"
+                    aria-label="Next photo"
+                  >
+                    <span class="icon is-small">
+                      <i class="arrow-icon right-arrow" />
+                    </span>
+                  </a>
+                </p>
+              )
+            }
+          </div>
+        </div>
+        <div class="level-right">
+          <p class="control">
+            <a
+              href={galleryHref}
+              class="button is-dark close-button"
+              aria-label="Back to gallery"
+            >
+              <span class="icon is-small is-rounded">
+                <i class="close-icon"></i>
+              </span>
+            </a>
+          </p>
+        </div>
+      </nav>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .photo-body {
+    padding: 0;
+    align-items: normal;
+    flex-direction: column;
+  }
+
+  .photo-stage {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .photo-stage :global(img) {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .photo-nav {
+    height: 10vh;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .close-button {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  /* Formerly styled-components in photoElementTemplate.js */
+  .arrow-icon {
+    border: solid #f5f5f5;
+    padding: 5px;
+    transform: rotate(45deg);
+  }
+
+  .arrow-icon.left-arrow {
+    border-width: 0 0 2px 2px;
+  }
+
+  .arrow-icon.right-arrow {
+    border-width: 2px 2px 0 0;
+  }
+
+  .close-icon {
+    width: 80%;
+    height: 80%;
+    position: relative;
+  }
+
+  .close-icon::before,
+  .close-icon::after {
+    content: "";
+    position: absolute;
+    background: #f5f5f5;
+    width: 2px;
+    height: 100%;
+  }
+
+  .close-icon::before {
+    transform: rotate(45deg);
+  }
+
+  .close-icon::after {
+    transform: rotate(-45deg);
+  }
+</style>
+
+<script>
+  // Keyboard navigation, which the Gatsby version never had.
+  const links = {
+    ArrowLeft: document.querySelector<HTMLAnchorElement>(
+      '[aria-label="Previous photo"]',
+    ),
+    ArrowRight: document.querySelector<HTMLAnchorElement>(
+      '[aria-label="Next photo"]',
+    ),
+    Escape: document.querySelector<HTMLAnchorElement>(
+      '[aria-label="Back to gallery"]',
+    ),
+  };
+
+  document.addEventListener("keydown", (event) => {
+    const link = links[event.key as keyof typeof links];
+    if (link) {
+      event.preventDefault();
+      link.click();
+    }
+  });
+</script>

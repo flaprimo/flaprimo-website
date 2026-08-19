@@ -1,0 +1,13 @@
+# Cloudflare Pages redirects.
+# Format: [source path] [destination] [status]. Static rules must come before
+# dynamic (splat) ones, and the first match wins.
+#
+# Note: Cloudflare does NOT support a domain in the source position, unlike
+# Netlify. Cross-domain redirects have to be Redirect Rules on a zone you own.
+
+# Legacy WordPress-era category paths.
+/programming-languages/* /blog/:splat 301
+/arduino/* /blog/:splat 301
+/os/windows/* /blog/:splat 301
+/os/* /blog/:splat 301
+/university/* /blog/:splat 301

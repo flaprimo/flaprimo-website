@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "flaprimo-website",
+  "compatibility_date": "2026-08-19",
+
+  // Assets-only Worker: there is no Worker script, so `main`, `assets.binding`
+  // and `run_worker_first` are all deliberately omitted. Never set
+  // `run_worker_first` here — it would make every request a billable
+  // invocation, and free-tier overage returns 429 instead of serving the file.
+  "assets": {
+    "directory": "./dist",
+
+    // Every page is a directory index (`about/index.html`), so `/about`
+    // redirects to `/about/`. Matches `trailingSlash: "always"` in
+    // astro.config.mjs. Note Workers uses 307 here, where Pages used 308.
+    "html_handling": "auto-trailing-slash",
+
+    // Must be set explicitly. The default is "none", which would silently
+    // drop dist/404.html and return a bare 404 with no page. Do not use
+    // "single-page-application" — it serves / with a 200 for every unmatched
+    // URL, which would be catastrophic for indexing.
+    "not_found_handling": "404-page",
+  },
+}

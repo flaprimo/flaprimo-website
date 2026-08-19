@@ -1,0 +1,62 @@
+---
+import { social } from "../config";
+import { fitGlyph, socialIcons } from "./social-icons";
+
+/**
+ * Replaces react-social-icons: the SVG paths are inlined at build time, so
+ * nothing ships to the browser.
+ */
+---
+
+<ul class="social-buttons">
+  {
+    social.map((s) => {
+      const icon = socialIcons[s.icon];
+      const { scale, x, y } = fitGlyph(icon);
+      return (
+        <li>
+          <a
+            href={s.baseurl + s.user}
+            rel="me noopener noreferrer"
+            target="_blank"
+            title={s.title}
+            aria-label={s.title}
+          >
+            <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+              <circle cx="12" cy="12" r="12" fill="#363636" />
+              <g transform={`translate(${x} ${y}) scale(${scale})`}>
+                <path d={icon.path} fill="#fff" />
+              </g>
+            </svg>
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .social-buttons {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .social-buttons li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .social-buttons a {
+    display: block;
+    line-height: 0;
+  }
+
+  .social-buttons svg {
+    transition: transform 0.2s ease;
+  }
+
+  .social-buttons a:hover svg {
+    transform: scale(1.1);
+  }
+</style>

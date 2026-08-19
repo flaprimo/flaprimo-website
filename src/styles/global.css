@@ -1,0 +1,24 @@
+/* Long words and code blocks used to be handled by a styled-components
+   wrapper in blogElementTemplate; it belongs with the prose styles. */
+.content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.content pre {
+  overflow-x: auto;
+}
+
+/* Replaces gatsby-remark-responsive-iframe. */
+.content iframe {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+/* Markdown images are optimised by astro:assets; keep them inside the column. */
+.content img {
+  height: auto;
+  max-width: 100%;
+}

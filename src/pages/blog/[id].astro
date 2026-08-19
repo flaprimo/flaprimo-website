@@ -1,0 +1,78 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection, render } from "astro:content";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Tags from "../../components/Tags.astro";
+import NextPrevElements from "../../components/NextPrevElements.astro";
+import Comments from "../../components/Comments.astro";
+import { excerpt } from "../../lib/excerpt";
+
+export const getStaticPaths = async () => {
+  const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  // Newest first, so "previous" is the older post and "next" the newer one —
+  // the same relationship gatsby-node.js set up.
+  return posts.map((post, index) => ({
+    params: { id: post.id },
+    props: {
+      post,
+      previous: posts[index + 1],
+      next: posts[index - 1],
+    },
+  }));
+};
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { post, previous, next } = Astro.props as Props;
+const { Content } = await render(post);
+
+const date = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "2-digit",
+  year: "numeric",
+}).format(post.data.date);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={excerpt(post.body ?? "")}
+  type="article"
+>
+  <Header
+    title={post.data.title}
+    subtitle={`${date} - ${post.data.category}`}
+  />
+
+  <div class="container section article-section">
+    <div class="columns is-centered">
+      <div class="column is-7">
+        <div class="content">
+          <Content />
+        </div>
+
+        <Tags tags={post.data.tags} />
+
+        <NextPrevElements
+          previous={previous && {
+            href: `/blog/${previous.id}/`,
+            title: previous.data.title,
+          }}
+          next={next && { href: `/blog/${next.id}/`, title: next.data.title }}
+        />
+
+        <Comments title={post.data.title} type="blog" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .article-section {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+</style>

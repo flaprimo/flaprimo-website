@@ -1,0 +1,40 @@
+---
+import "bulma/css/bulma.css";
+import "../styles/global.css";
+
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Seo from "../components/Seo.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  /**
+   * Full-bleed pages (the photo viewer) render without the fixed navbar,
+   * footer, or the body padding the navbar needs.
+   */
+  bare?: boolean;
+}
+
+const { title, description, image, type, bare = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="red" />
+    <Seo title={title} description={description} image={image} type={type} />
+    <slot name="head" />
+  </head>
+  <body class={bare ? undefined : "has-navbar-fixed-top"}>
+    {!bare && <Nav />}
+    <slot />
+    {!bare && <Footer />}
+  </body>
+</html>

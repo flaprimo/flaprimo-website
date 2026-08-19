@@ -1,0 +1,14 @@
+dist
+.astro
+node_modules
+package-lock.json
+
+# Blog and gallery markdown is authored prose — reformatting it would rewrite
+# posts and create noisy diffs on content that is already published.
+src/content
+
+# Cloudflare parses these by line; Prettier has no formatter for them anyway.
+public/_headers
+public/_redirects
+
+.claude

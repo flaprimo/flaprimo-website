@@ -1,0 +1,42 @@
+---
+interface Neighbour {
+  href: string;
+  title: string;
+}
+
+interface Props {
+  previous?: Neighbour;
+  next?: Neighbour;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<ul class="next-prev">
+  {
+    previous && (
+      <li>
+        <a href={previous.href} rel="prev">
+          ← {previous.title}
+        </a>
+      </li>
+    )
+  }
+
+  {
+    next && (
+      <li>
+        <a href={next.href} rel="next">
+          {next.title} →
+        </a>
+      </li>
+    )
+  }
+</ul>
+
+<style>
+  .next-prev {
+    list-style: none;
+    padding: 0;
+  }
+</style>

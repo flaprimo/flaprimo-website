@@ -1,0 +1,43 @@
+---
+import { site, twitterHandle } from "../config";
+
+interface Props {
+  /** Page title; the site name is appended. Omit on the home page. */
+  title?: string;
+  description?: string;
+  /** Absolute-from-root path or full URL of the social card image. */
+  image?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, image, type = "website" } = Astro.props;
+
+const seoTitle = title ? `${title} | ${site.title}` : site.title;
+const seoDescription = description || site.description;
+// Gatsby emitted a bare pathname here; an absolute URL is what OG actually wants.
+const seoUrl = new URL(Astro.url.pathname, site.url).href;
+const seoImage = new URL(image ?? site.seoImage, site.url).href;
+---
+
+{/* General tags */}
+<title>{seoTitle}</title>
+<meta name="description" content={seoDescription} />
+<meta name="image" content={seoImage} />
+<link rel="canonical" href={seoUrl} />
+
+{/* OpenGraph tags */}
+<meta property="og:url" content={seoUrl} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={seoTitle} />
+<meta property="og:description" content={seoDescription} />
+<meta property="og:image" content={seoImage} />
+
+{/* Twitter Card tags */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content={twitterHandle} />
+<meta name="twitter:title" content={seoTitle} />
+<meta name="twitter:description" content={seoDescription} />
+<meta name="twitter:image" content={seoImage} />
+
+{/* Site Verification */}
+<meta name="google-site-verification" content={site.googleSiteVerification} />
